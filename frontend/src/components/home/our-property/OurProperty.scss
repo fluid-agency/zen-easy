@@ -1,0 +1,138 @@
+.property-collection {
+  max-width: 1280px;
+  margin: 80px auto 120px;
+  padding: 0px 20px;
+}
+
+.our-property-header {
+  text-align: center;
+  margin: 50px 0px;
+
+  h1 {
+    font-size: 56px;
+    font-weight: 600;
+    color: black;
+    letter-spacing: 1px;
+  }
+}
+
+.property-section {
+  position: relative;
+  margin-bottom: 20px;
+  overflow: hidden;
+  border-radius: 20px;
+  height: 700px;
+}
+
+.parallax-container {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: calc(100% + 100px);
+  z-index: 1;
+  will-change: transform;
+}
+
+.parallax-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.1s ease-out;
+}
+
+.property-content {
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  z-index: 2;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+  color: var(--primary);
+  padding: 60px 40px 40px;
+}
+
+.property-content h2 {
+  font-size: 28.8px;
+  font-weight: 500;
+  margin: 0px 0px 10px 0px;
+  letter-spacing: 0.5px;
+}
+
+.property-content p {
+  font-size: 16px;
+  margin: 0px;
+  opacity: 0.9;
+  font-weight: 300;
+}
+
+.property-section:hover {
+  .parallax-image {
+    transform: scale(1.05);
+    transition: transform 0.6s ease;
+  }
+
+  .property-content h2 {
+    transform: translateY(-5px);
+    transition: transform 0.3s ease;
+  }
+}
+
+/* -------Responsive design ---------*/
+@media (max-width: 576px) {
+  .property-collection {
+    max-width: 576px;
+    margin: 40px auto 60px;
+    padding: 0px 10px;
+  }
+
+  .our-property-header {
+    margin: 10px 0px;
+
+    h1 {
+      font-size: 20px;
+      font-weight: 400;
+      color: black;
+      letter-spacing: 1px;
+
+    }
+
+  }
+
+  .property-section {
+    margin-bottom: 20px;
+    overflow: hidden;
+    border-radius: 10px;
+    height: 400px;
+  }
+
+  .property-content {
+    padding: 30px 20px 20px;
+  }
+
+  .property-content h2 {
+    font-size: 20px;
+    font-weight: 500;
+    margin: 0px 0px 10px 0px;
+    letter-spacing: 0.5px;
+  }
+
+  .property-content p {
+    font-size: 16px;
+    margin: 0px;
+    opacity: 0.9;
+    font-weight: 300;
+  }
+
+  .property-section:hover {
+    .parallax-image {
+      transform: scale(1.05);
+      transition: transform 0.6s ease;
+    }
+
+    .property-content h2 {
+      transform: translateY(-5px);
+      transition: transform 0.3s ease;
+    }
+  }
+}

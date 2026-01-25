@@ -1,0 +1,268 @@
+// No :root definition here. Colors like --primary and --bg-primary
+// are expected to be defined globally in your index.css or similar.
+
+.otp-validate-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+  background: linear-gradient(135deg, #f0f2f5 0%, #e0e4e8 100%);
+  box-sizing: border-box;
+}
+
+.otp-card {
+  background: linear-gradient(135deg, var(--bg-primary) 0%, #fff 100%);
+  border-radius: 25px;
+  padding: 40px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+  border: 2px solid rgba(228, 237, 100, 0.3); // Uses RGB of #E4ED64 (your --primary)
+  width: 100%;
+  max-width: 500px;
+  text-align: center;
+  animation: fadeIn 0.8s ease-out;
+
+  .otp-header {
+    margin-bottom: 30px;
+
+    h2 {
+      font-size: 32px;
+      font-weight: 800;
+      color: #1a1a1a;
+      margin-bottom: 10px;
+    }
+
+    p {
+      color: #666;
+      font-size: 16px;
+      line-height: 1.5;
+
+      .user-email {
+        font-weight: 600;
+        color: var(--primary);
+      }
+    }
+  }
+
+  .otp-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    .form-group {
+      text-align: left;
+
+      label {
+        display: block;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin-bottom: 8px;
+        font-size: 16px;
+      }
+
+      input {
+        width: 100%;
+        padding: 16px 20px;
+        border: 2px solid #e1e5e9;
+        border-radius: 15px;
+        font-size: 18px;
+        text-align: center;
+        letter-spacing: 5px;
+        transition: all 0.3s ease;
+        background: white;
+        box-sizing: border-box;
+
+        &:focus {
+          outline: none;
+          border-color: var(--primary);
+          box-shadow: 0 0 0 3px rgba(228, 237, 100, 0.1); // Uses RGB of #E4ED64
+          transform: translateY(-2px);
+        }
+
+        &.error {
+          border-color: #f44336;
+          box-shadow: 0 0 0 3px rgba(244, 67, 54, 0.1);
+        }
+
+        &::placeholder {
+          color: #999;
+        }
+      }
+
+      .error-message {
+        color: #f44336;
+        font-size: 14px;
+        margin-top: 8px;
+        font-weight: 500;
+        display: block;
+      }
+    }
+
+    .response-message {
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 15px;
+      margin-top: 10px;
+
+      &.success {
+        background-color: rgba(76, 175, 80, 0.1);
+        color: #4CAF50;
+        border: 1px solid #4CAF50;
+      }
+
+      &.error {
+        background-color: rgba(244, 67, 54, 0.1);
+        color: #f44336;
+        border: 1px solid #f44336;
+      }
+    }
+
+    .form-actions {
+      margin-top: 20px;
+
+      .submit-btn {
+        width: 100%;
+        padding: 16px 24px;
+        font-size: 18px;
+        font-weight: 700;
+        border-radius: 15px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        // Uses .btn-primary styles from index.css via class
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+
+        &:disabled {
+          opacity: 0.7;
+          cursor: not-allowed;
+          transform: none;
+          box-shadow: none;
+        }
+
+        &:not(:disabled):hover {
+          background: #000; // Overrides .btn-primary:hover for specific effect
+          color: white;
+          transform: translateY(-3px);
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+      }
+    }
+
+    .resend-section {
+      margin-top: 25px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+
+      .resend-btn {
+        background: none;
+        border: none;
+        color: var(--primary);
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: color 0.3s ease;
+
+        &:hover:not(:disabled) {
+          color: (var(--primary), 15%); // SCSS function for hover effect
+          text-decoration: underline;
+        }
+
+        &:disabled {
+          color: #999;
+          cursor: not-allowed;
+        }
+      }
+
+      .back-to-login {
+        color: #666;
+        font-size: 15px;
+        text-decoration: none;
+        transition: color 0.3s ease;
+
+        &:hover {
+          color: #1a1a1a;
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .otp-card {
+    padding: 30px;
+    border-radius: 20px;
+
+    .otp-header {
+      h2 {
+        font-size: 28px;
+      }
+      p {
+        font-size: 15px;
+      }
+    }
+
+    .otp-form {
+      .form-group {
+        input {
+          padding: 14px 15px;
+          font-size: 16px;
+        }
+      }
+      .form-actions {
+        .submit-btn {
+          padding: 14px 20px;
+          font-size: 16px;
+        }
+      }
+      .resend-section {
+        flex-direction: column;
+        gap: 10px;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .otp-card {
+    padding: 20px;
+    border-radius: 15px;
+
+    .otp-header {
+      h2 {
+        font-size: 24px;
+      }
+      p {
+        font-size: 14px;
+      }
+    }
+
+    .otp-form {
+      .form-group {
+        input {
+          padding: 12px 10px;
+        }
+      }
+      .form-actions {
+        .submit-btn {
+          font-size: 15px;
+        }
+      }
+    }
+  }
+}

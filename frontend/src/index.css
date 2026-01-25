@@ -1,0 +1,120 @@
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap");
+@import "tailwindcss";
+* {
+  font-family: "Geist", sans-serif;
+}
+
+:root {
+  --primary: #e4ed64;
+  --bg-primary: #fff9ea;
+}
+
+.primary {
+  color: var(--primary);
+}
+
+.bg-primary {
+  background-color: #fff9ea;
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  color: #000;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.3s, transform 0.3s;
+  transition-delay: 0.1s;
+}
+.btn-primary:hover {
+  background-color: #000000;
+  color: white;
+}
+
+/* animations */
+@keyframes slideFromBottom {
+  0% {
+    transform: translateY(100px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-100px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Custom Scrollbar Styles */
+
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+  border-radius: 10px;
+  border: 1px solid rgba(228, 237, 100, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, var(--primary), #d4dc4a);
+  border-radius: 10px;
+  border: 2px solid var(--bg-primary);
+  transition: all 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #d4dc4a, #000000);
+  transform: scale(1.05);
+  border-color: rgba(228, 237, 100, 0.3);
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: #000000;
+}
+
+::-webkit-scrollbar-corner {
+  background: var(--bg-primary);
+}
+
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary) var(--bg-primary);
+}
+
+
+::-webkit-scrollbar-thumb {
+  box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.1);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Smooth scrolling behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+
+@media (max-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border: 1px solid var(--bg-primary);
+  }
+}
+
+

@@ -1,0 +1,580 @@
+
+.prof-profile-wrapper {
+  background-color: var(--bg-primary); 
+  min-height: 100vh;
+  padding: 50px 20px; 
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; 
+}
+
+.prof-profile-container {
+  display: flex;
+  flex-wrap: wrap; 
+  gap: 30px; 
+  max-width: 1200px;
+  width: 100%;
+  align-items: flex-start; 
+
+  /* Loading, Error, No Data States */
+  &.loading-state, &.error-state, &.no-data-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 80px 20px;
+    background-color: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.08);
+    max-width: 600px;
+    margin: 50px auto; 
+
+    .loading-spinner {
+      margin-bottom: 20px;
+    }
+    p {
+      font-size: 16px;
+      color: #666;
+    }
+    .error-icon, .no-data-icon {
+      font-size: 48px;
+      margin-bottom: 15px;
+      color: #d32f2f; 
+    }
+    .no-data-icon {
+      color: #999;
+    }
+    h2 {
+      font-size: 32px;
+      color: #333;
+      margin-bottom: 10px;
+    }
+  }
+
+  /* Left Column: User Profile Card */
+  .user-profile-card {
+    flex: 1; 
+    min-width: 350px; 
+    max-width: 400px; 
+    background-color: #ffffff;
+    border-radius: 18px;
+    border: 2px solid var(--primary);
+    padding: 30px;
+    position: sticky; 
+    top: 50px; 
+    align-self: flex-start; 
+    animation: fadeInSlideUp 0.6s ease-out forwards; 
+
+    .profile-header {
+      text-align: center;
+      margin-bottom: 25px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #eee;
+
+      .profile-image-container {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        overflow: hidden;
+        margin: 0 auto 20px;
+        border: 4px solid var(--primary);
+        box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+
+      .profile-name {
+        font-size: 35px;
+        font-weight: 800;
+        color: #1a1a1a;
+        margin-bottom: 8px;
+        line-height: 1.2;
+      }
+
+      .profile-status {
+        font-size: 15px;
+        color: #666;
+        .status-pill {
+          display: inline-block;
+          padding: 4px 10px;
+          border-radius: 15px;
+          font-size: 13px;
+          font-weight: 600;
+          text-transform: uppercase;
+          margin-left: 5px;
+
+          &.status-active {
+            background-color: #e8f5e9;
+            color: #28a745;
+          }
+          &.status-inactive {
+            background-color: #f0f0f0;
+            color: #6c757d;
+          }
+        }
+      }
+    }
+
+    .profile-info-section {
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 1px dashed #eee; 
+
+      &:last-of-type {
+        border-bottom: none; 
+        margin-bottom: 0;
+        padding-bottom: 0;
+      }
+
+      h2 {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--primary); 
+        margin-bottom: 15px;
+        padding-left: 10px; 
+        border-left: 4px solid var(--primary); 
+      }
+
+      .info-list {
+        list-style: none;
+        padding: 0;
+        li {
+          font-size: 16px;
+          color: #555;
+          margin-bottom: 10px;
+          display: flex;
+          align-items: flex-start;
+          line-height: 1.5;
+
+          .icon {
+            font-size: 19px;
+            color: #777;
+            margin-right: 10px;
+            flex-shrink: 0; 
+          }
+        }
+        .verified-status {
+          font-weight: 600;
+          color: #28a745;
+        }
+      }
+
+      .social-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px; 
+
+        .social-link {
+          display: inline-flex;
+          align-items: center;
+          padding: 8px 15px;
+          border-radius: 20px;
+          font-size: 14px;
+          font-weight: 600;
+          text-decoration: none;
+          transition: all 0.2s ease;
+          color: #fff;
+
+          &.facebook { background-color: #3b5998; }
+          &.instagram { background-color: #E1306C; }
+          &.linkedin { background-color: #0077B5; }
+
+          &:hover {
+            transform: translateY(-2px);
+            opacity: 0.9;
+          }
+        }
+      }
+    }
+  }
+
+  /* Right Column: Professional Profiles Section */
+  .professional-profiles-column {
+    flex: 2; 
+    min-width: 450px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px; 
+    padding-top: 10px; 
+
+    h2 {
+      font-size: 32px;
+      font-weight: 800;
+      color: #1a1a1a;
+      margin-bottom: 25px;
+      text-align: center;
+      padding-bottom: 15px;
+      border-bottom: 2px solid var(--primary);
+      line-height: 1.2;
+    }
+
+    .no-professional-profiles {
+      background-color: #ffffff;
+      border-radius: 18px;
+      box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.05);
+      border: 1px solid rgba(0, 0, 0, 0.03);
+      padding: 40px;
+      text-align: center;
+
+      .icon {
+        font-size: 48px;
+        margin-bottom: 15px;
+        color: #999;
+      }
+      p {
+        font-size: 18px;
+        color: #666;
+      }
+    }
+
+    .professional-service-card-design {
+      background-color: #ffffff;
+      border-radius: 18px;
+      box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.06);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      animation: fadeIn 0.8s ease-out forwards;
+
+      &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0px 12px 35px rgba(0, 0, 0, 0.1);
+      }
+
+      .card-header-main {
+        background-color: var(--primary);
+        padding: 15px 25px;
+        display: flex;
+        flex-direction: column; 
+        gap: 10px;
+
+        .category-and-status {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 15px;
+
+          .category-icon {
+            font-size: 40px; 
+            line-height: 1;
+            flex-shrink: 0;
+            margin-right: 10px; 
+          }
+
+          .category-name {
+            font-size: 24px; 
+            font-weight: 700; 
+            color: #1a1a1a;
+            flex-grow: 1;
+          }
+
+          .service-card-status {
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 13px; 
+            font-weight: 700; 
+            text-transform: uppercase;
+            flex-shrink: 0;
+            background-color: rgba(255, 255, 255, 0.5); 
+            color: #1a1a1a; 
+          }
+        }
+      } 
+
+      .card-profile-summary {
+        background-color: #ffffff; 
+        padding: 20px 25px 0px 25px; 
+        text-align: left; 
+
+        .professional-name {
+          font-size: 28px; 
+          font-weight: 700;
+          color: #1a1a1a;
+          margin-bottom: 5px;
+        }
+        .professional-occupation {
+          font-size: 16px; 
+          color: #555;
+          margin-bottom: 15px; 
+        }
+      } 
+
+      .card-contact-summary {
+        background-color: #ffffff;
+        padding: 0px 25px 20px 25px; 
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        
+        .contact-item {
+          display: flex;
+          align-items: center;
+          font-size: 15px;
+          color: #555;
+          white-space: nowrap; 
+
+          span:first-child { 
+            font-size: 18px;
+            margin-right: 10px;
+            color: #777;
+          }
+        }
+      } 
+
+      .card-description-area {
+        padding: 20px 25px;
+        border-top: 1px solid #eee; 
+        p {
+          font-size: 15px;
+          color: #444;
+          line-height: 1.6;
+          text-align: justify;
+        }
+      }
+
+      .card-details-grid {
+        padding: 20px 25px 25px; 
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px 20px; 
+        border-top: 1px solid #eee; 
+
+        .detail-row {
+          display: flex;
+          flex-direction: column; 
+          font-size: 14px;
+          color: #666;
+
+          &.full-row {
+            grid-column: 1 / -1; 
+          }
+
+          .detail-label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px; 
+          }
+          .detail-value {
+            line-height: 1.4;
+          }
+          &.rating-row .detail-value {
+              font-weight: 700;
+              color: var(--primary); 
+              font-size: 16px; 
+          }
+        }
+        .edit-profession{
+          padding: 10px 15px;
+          background-color: var(--primary);
+          color: rgb(12, 12, 78);
+          font-weight: 600;
+          border-radius: 8px;
+          text-align: center;
+          cursor: pointer;
+          transition: background-color 0.3s ease;
+
+          &:hover {
+             scale: 1.04;
+             transition: all 0.5s ease;
+          }
+        }
+      }
+    } 
+  } 
+}
+
+
+@keyframes fadeInSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+
+
+@media (max-width: 1024px) {
+  .prof-profile-wrapper {
+    padding: 30px 15px;
+  }
+  .prof-profile-container {
+    flex-direction: column; 
+    align-items: center; 
+    gap: 40px;
+
+    .user-profile-card {
+      position: static; 
+      max-width: 600px; 
+      width: 100%;
+      margin: 0 auto; 
+    }
+
+    .professional-profiles-column {
+      width: 100%;
+      min-width: unset; 
+      max-width: 700px; 
+      padding-top: 0px; 
+      
+      h2 {
+        font-size: 28px; 
+        margin-bottom: 20px;
+      }
+
+      .professional-service-card-design {
+        .card-header-main {
+          padding: 15px 20px;
+          .category-icon { font-size: 32px; }
+          .category-name { font-size: 20px; }
+        }
+        .card-main-content {
+            flex-direction: column;
+            align-items: flex-start;
+            .contact-area {
+                align-items: flex-start;
+            }
+        }
+        .card-image-container { 
+          height: 200px;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .prof-profile-wrapper {
+    padding: 20px 10px;
+  }
+  .prof-profile-container {
+    gap: 30px;
+
+    .user-profile-card {
+      padding: 25px;
+      .profile-header {
+        .profile-name {
+          font-size: 28px;
+        }
+      }
+      .profile-info-section {
+        h2 {
+          font-size: 18px;
+        }
+        .info-list li, .social-link {
+          font-size: 14px;
+        }
+      }
+    }
+
+    .professional-profiles-column {
+      gap: 20px;
+      h2 {
+        font-size: 24px;
+      }
+      .professional-service-card-design {
+        .card-header-main {
+          padding: 12px 18px;
+          .category-icon { font-size: 28px; }
+          .category-name { font-size: 18px; }
+          .service-card-status { font-size: 12px; }
+        }
+        .card-main-content {
+          padding: 18px;
+          gap: 15px;
+          .professional-name { font-size: 22px; }
+          .professional-occupation { font-size: 14px; }
+          .contact-item { font-size: 14px; }
+          .contact-item span:first-child { font-size: 17px; }
+        }
+        .card-description-area {
+            padding: 0 18px 18px;
+            p { font-size: 14px; }
+        }
+        .card-details-grid {
+          padding: 0 18px 18px;
+          gap: 10px;
+          .detail-row { font-size: 13px; }
+          .rating-row .detail-value { font-size: 15px; }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .prof-profile-wrapper {
+    padding: 15px 5px;
+  }
+  .prof-profile-container {
+    gap: 20px;
+
+    .user-profile-card {
+      padding: 20px;
+      .profile-header {
+        .profile-image-container {
+          width: 120px;
+          height: 120px;
+        }
+        .profile-name {
+          font-size: 24px;
+        }
+      }
+      .profile-info-section {
+        h2 {
+          font-size: 17px;
+        }
+        .info-list li, .social-link {
+          font-size: 13px;
+        }
+        .social-link {
+            padding: 6px 10px;
+        }
+      }
+    }
+
+    .professional-profiles-column {
+        h2 {
+            font-size: 20px;
+        }
+      .professional-service-card-design {
+        .card-header-main {
+          .category-icon { font-size: 32px; }
+          .category-name { font-size: 20px; }
+        }
+        .card-main-content {
+          padding: 15px;
+          .professional-name { font-size: 20px; }
+          .professional-occupation { font-size: 13px; }
+          .contact-item { font-size: 13px; }
+        }
+        .card-description-area {
+            padding: 0 15px 15px;
+            p { font-size: 13px; }
+        }
+        .card-details-grid {
+          padding: 0 15px 15px;
+          grid-template-columns: 1fr; 
+          .detail-row { font-size: 13px; }
+          .rating-row .detail-value { font-size: 15px; }
+        }
+      }
+    }
+  }
+}

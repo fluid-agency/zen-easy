@@ -1,0 +1,25 @@
+.not-found-container {
+  height: 100vh;
+  width: 100vw;
+  border: 2px solid red;
+  background-image: url('/images/not-found/not-found-bg.jpg');
+  background-position: center; 
+  background-size: cover;
+  background-repeat: no-repeat;
+  position: relative;
+
+  .go-home-div{
+    position: absolute;
+    font-size: 20px;
+    // background-color: rgb(229, 228, 228);
+    border:2px solid rgb(201, 201, 201);
+    box-shadow: 2px 4px 4px rgb(199, 197, 197);
+    top: 65%;
+    left:45.4%;
+    color: rgb(255, 255, 255);
+    font-weight: 600;
+    padding: 5px 10px;
+    border-radius: 12px;
+  }
+
+}

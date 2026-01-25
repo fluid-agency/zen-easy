@@ -1,0 +1,247 @@
+/* Modal Overlay */
+.reviews-modal-overlay {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+/* Modal Content */
+.reviews-modal-content {
+  background-color: #ffffff;
+  padding: 40px;
+  border-radius: 18px;
+  box-shadow: 0px 15px 40px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+  animation: slideInFromTop 0.4s ease-out forwards;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Close Button */
+.modal-close-button {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 32px;
+  color: #888;
+  cursor: pointer;
+  padding: 5px;
+  line-height: 1;
+  transition: color 0.2s ease, transform 0.2s ease;
+
+  &:hover {
+    color: #333;
+    transform: rotate(90deg);
+  }
+}
+
+/* Modal Header */
+.modal-title {
+  font-size: 30px;
+  font-weight: 800;
+  color: #1a1a1a;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.modal-subtitle {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 25px;
+  text-align: center;
+  font-weight: 500;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 15px;
+}
+
+/* Reviews List */
+.reviews-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-right: 10px;
+}
+
+.review-card {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.05);
+  border: 1px solid #eee;
+
+  .review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed #e0e0e0;
+
+    .client-name {
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    .stars-wrapper {
+      display: flex;
+      gap: 2px;
+      .star-icon {
+        font-size: 22px;
+        color: #d3d3d3;
+        &.filled {
+          color: #ffc107;
+        }
+      }
+    }
+  }
+
+  .review-feedback {
+    font-size: 15px;
+    color: #444;
+    line-height: 1.6;
+    white-space: pre-wrap;
+  }
+}
+
+/* No Reviews Message */
+.no-reviews-message {
+    text-align: center;
+    padding: 30px;
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    margin-top: 20px;
+    p {
+        font-size: 16px;
+        color: #777;
+        margin-bottom: 10px;
+    }
+}
+
+/* Modal Actions */
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+
+  .close-button {
+    padding: 12px 30px;
+    font-size: 16px;
+    font-weight: 700;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background-color: var(--primary);
+    color: #1a1a1a;
+    border: 2px solid var(--primary);
+
+    &:hover {
+      background-color: (var(--primary), 10%);
+      transform: translateY(-2px);
+      box-shadow: 0px 5px 15px rgba(228, 237, 100, 0.4);
+    }
+  }
+}
+
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideInFromTop {
+  from {
+    transform: translateY(-50px) scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 600px) {
+  .reviews-modal-content {
+    padding: 25px;
+    margin: 15px;
+  }
+
+  .modal-title {
+    font-size: 24px;
+  }
+
+  .modal-subtitle {
+    font-size: 14px;
+    padding-bottom: 10px;
+  }
+
+  .review-card {
+    padding: 15px;
+    .review-header {
+      flex-direction: column;
+      align-items: flex-start;
+      margin-bottom: 8px;
+      .client-name {
+        font-size: 16px;
+        margin-bottom: 5px;
+      }
+      .stars-wrapper {
+        font-size: 18px;
+      }
+    }
+    .review-feedback {
+      font-size: 14px;
+    }
+  }
+
+  .modal-actions {
+    margin-top: 20px;
+    .close-button {
+      padding: 10px 20px;
+      font-size: 15px;
+    }
+  }
+}
+
+@media (max-width: 400px) {
+    .reviews-modal-content {
+        padding: 20px;
+    }
+    .modal-title {
+        font-size: 20px;
+    }
+    .modal-subtitle {
+        font-size: 13px;
+    }
+    .review-card {
+        padding: 12px;
+        .review-header {
+            .client-name {
+                font-size: 15px;
+            }
+            .stars-wrapper {
+                font-size: 16px;
+            }
+        }
+        .review-feedback {
+            font-size: 13px;
+        }
+    }
+}

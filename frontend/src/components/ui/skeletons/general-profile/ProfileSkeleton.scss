@@ -1,0 +1,110 @@
+.loading-skeleton {
+  width: 1280px;
+  height: 800px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+
+  .skeleton-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #f0f0f0;
+
+    .skeleton-avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: #e0e0e0;
+      animation: pulse 1.5s infinite ease-in-out;
+    }
+
+    .skeleton-intro {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+
+      .skeleton-line {
+        height: 25px;
+        background: #e0e0e0;
+        border-radius: 5px;
+        animation: pulse 1.5s infinite ease-in-out;
+      }
+      .skeleton-line.name {
+        width: 70%;
+      }
+      .skeleton-line.occupation {
+        width: 40%;
+        height: 18px;
+      }
+    }
+
+    .skeleton-actions {
+      display: flex;
+      gap: 15px;
+      .skeleton-button {
+        width: 120px;
+        height: 40px;
+        border-radius: 10px;
+        background: #e0e0e0;
+        animation: pulse 1.5s infinite ease-in-out;
+      }
+    }
+  }
+
+  .skeleton-content-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+
+    .skeleton-card {
+      background: #f8f8f8;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+      animation: pulse 1.5s infinite ease-in-out;
+
+      .skeleton-card-header {
+        height: 20px;
+        width: 60%;
+        background: #e0e0e0;
+        margin-bottom: 20px;
+        border-radius: 5px;
+      }
+
+      .skeleton-info-line {
+        height: 15px;
+        background: #e0e0e0;
+        border-radius: 3px;
+        margin-bottom: 10px;
+      }
+      .skeleton-info-line.short {
+        width: 80%;
+      }
+      .skeleton-info-line.long {
+        width: 95%;
+      }
+    }
+  }
+}
+
+
+  @keyframes pulse {
+    0% {
+      background-color: #e0e0e0;
+    }
+    50% {
+      background-color: #f0f0f0;
+    }
+    100% {
+      background-color: #e0e0e0;
+    }
+  }

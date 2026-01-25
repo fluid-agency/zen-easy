@@ -1,0 +1,100 @@
+.banner {
+  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.5)),
+    url("/images/home/banner.png");
+  background-repeat: no-repeat;
+  height: 100dvh;
+  background-size: cover;
+  background-position: center;
+  width: full;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+
+  .banner-content-wrapper {
+    width: 1280px;
+    margin: auto;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+    .banner-content {
+      h2 {
+        margin-bottom: 40px;
+        width: 90%;
+        text-align: left;
+        font-size:72px;
+        font-weight: 700;
+        color: #ffffff;
+      }
+      p {
+        width: 80%;
+        margin-bottom: 30px;
+        text-align: left;
+        font-size: 22px;
+        font-weight: 400;
+        color: #d8d8d8;
+        margin-top: 10px;
+      }
+    }
+  }
+  .banner-action-wrapper {
+    margin: 40px 0px 60px;
+    display: flex;
+    gap: 40px;
+
+    .button {
+      font-size: 18px;
+      font-weight: 500;
+      padding: 10px 20px;
+      border-radius: 24px;
+    }
+  }
+}
+
+
+// ------------responsive design--------------
+@media screen and (max-width: 576px) {
+  .banner {
+      background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.5)),
+    url("/images/home/banner2.png");
+    overflow:hidden;
+    background-repeat: no-repeat;
+    height: 500px;
+
+    .banner-content-wrapper {
+      max-width: 480px;
+      max-height: 500px !important;
+      overflow: hidden;
+      margin-top: 40px;
+      padding: 0 20px;
+
+      .banner-content {
+        h2 {
+          margin-bottom:30px;
+          width: 90%;
+          text-align: left;
+          font-size: 30px;
+          font-weight: 400;
+        }
+        p {
+          font-size: 12px;
+          font-weight: 400;
+          color: #d8d8d8;
+        }
+      }
+    }
+    .banner-action-wrapper {
+      margin: 10px 0px 30px;
+      display: flex;
+      gap: 20px;
+
+      .button {
+        font-size: 12px;
+        font-weight: 400;
+        padding: 5px 10px;
+        border-radius: 12px;
+      }
+    }
+  }
+}
