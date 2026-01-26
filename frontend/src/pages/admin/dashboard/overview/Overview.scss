@@ -645,7 +645,7 @@
           width: 32px;
           height: 32px;
           border-radius: 8px;
-          background: linear-gradient(135deg, var(--primary) 0%, #f4e55a 100%);
+          background: linear-gradient(135deg, rgb(243, 211, 141) 0%, rgb(240, 174, 190) 100%);
           color: #000;
           display: flex;
           align-items: center;
@@ -858,11 +858,11 @@
 
       .rent-price {
         font-weight: 700;
-        color: #c2410c;
+        color: #f9926a;
         font-size: 0.95rem;
         flex-shrink: 0;
         padding: 0.375rem 0.75rem;
-        background: linear-gradient(135deg, #fed7aa 0%, #fdba74 100%);
+        background: linear-gradient(135deg, #fde0bf 0%, #f3e6d7 100%);
         border-radius: 12px;
         transition: all 0.3s ease;
 
@@ -908,7 +908,7 @@
         height: 36px;
         border-radius: 8px;
         background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-        color: white;
+        color: rgba(0, 0, 0, 0.576);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -923,8 +923,8 @@
         }
 
         &.rated-rank-green {
-          background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-          box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+          border:3px solid rgb(250, 218, 158);
+          background: white;
         }
       }
 

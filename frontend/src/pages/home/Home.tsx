@@ -1,8 +1,11 @@
 import Banner from "../../components/home/banner/Banner";
 import Feedback from "../../components/home/feedback/Feedback";
 import Gallery from "../../components/home/gallery/Gallery";
+import { PricingBasic } from "../../components/home/membership/membership";
+
 import OurProperty from "../../components/home/our-property/OurProperty";
 import Service from "../../components/home/service/Service";
+
 
 const Home = () => {
   return (
@@ -15,6 +18,9 @@ const Home = () => {
       </div>
       <div>
         <Gallery/>
+      </div>
+      <div>
+      <PricingBasic/>
       </div>
       <div>
         <OurProperty/>
