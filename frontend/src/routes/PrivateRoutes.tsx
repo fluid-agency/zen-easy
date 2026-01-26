@@ -5,14 +5,13 @@ import OrbitalSpinner from "../components/ui/LoadingSpinner";
 
 const PrivateRoute = ({ children }: { children: ReactNode }) => {
   const authContext = useContext(AuthContext);
-
   const location = useLocation();
 
   if (!authContext) {
     console.error(
       "PrivateRoute: AuthContext is not available. Ensure AuthProvider wraps your application."
     );
-    return <Navigate to={"/auth/login"} />;
+    return <Navigate to="/auth/login" replace />;
   }
 
   const { user, loading } = authContext;
@@ -25,21 +24,24 @@ const PrivateRoute = ({ children }: { children: ReactNode }) => {
           justifyContent: "center",
           alignItems: "center",
           height: "100vh",
-          fontSize: "30px",
         }}
       >
-       <div><OrbitalSpinner/></div>
+        <OrbitalSpinner />
       </div>
     );
   }
-  if (!authContext) {
-    return <Navigate to={"/auth/login"} />;
+
+  if (!user) {
+    return (
+      <Navigate
+        to="/auth/login"
+        replace
+        state={{ from: location.pathname }}
+      />
+    );
   }
 
-  if (user) {
-    return children;
-  }
-  return <Navigate state={{ from: location.pathname }} to={"/auth/login"} />;
+  return children;
 };
 
 export default PrivateRoute;

@@ -148,8 +148,8 @@ export const Pricing: React.FC<PricingProps> = ({ plans }) => {
             className={cn(
               "rounded-2xl border p-6 text-center relative shadow-sm flex flex-col justify-between",
               plan.isPopular
-                ? "border-none text-background p-6 lg:p-7 bg-gradient-to-br from-[#ffca16] to-[#ffdd7d] border-2"
-                : "border-gray-100 bg-white"
+                ? "border-none text-background p-6 lg:p-7 bg-gradient-to-br from-[#ffca16]/50 to-[#ffca16]/15 pointer-events-none"
+                : "border-gray-100 bg-gradient-to-br from-[#ffca16]/10 to-[#ffca16]/5 pointer-events-none"
             )}
           >
             {plan.isPopular && (

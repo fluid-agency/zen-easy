@@ -11,6 +11,7 @@ const Banner = () => {
   const bannerContentRef = useRef(null);
   const bannerCtaRef = useRef(null);
   const bannerRef = useRef(null);
+  
 
   useEffect(() => {
     bannerAnimations();
@@ -31,17 +32,17 @@ const Banner = () => {
     gsap.fromTo(
       bannerHeadingRef.current,
       { y: 600, opacity: 0 },
-      { y: 0, opacity: 1, duration: 2 }
+      { y: 0, opacity: 1, duration: 0.8 }
     );
     gsap.fromTo(
       bannerContentRef.current,
       { y: 600, opacity: 0 },
-      { y: 0, opacity: 1, duration:2 , delay:0.25 }
+      { y: 0, opacity: 1, duration:0.8, delay:0.25 }
     );
     gsap.fromTo(
       bannerCtaRef.current,
-      { scale: 0, opacity: 0 },
-      { scale: 1, opacity: 1, duration: 1, delay: 1.25 }
+      { y:650,  opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.8, delay: 0.25 }
     );
     
   });

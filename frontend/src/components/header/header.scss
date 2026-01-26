@@ -1,0 +1,59 @@
+/* Login button: yellow by default, black fills from center on hover */
+
+.nav-center-black-fill {
+  position: relative;
+  overflow: hidden;
+  background-color: #fbd44a;
+  border: 2px solid #fbd44a;
+  color: #000;
+  transition: color 300ms ease;
+  z-index: 0;
+
+  /* Black overlay layer */
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: #000;
+    clip-path: circle(0% at 50% 50%);
+    transition: clip-path 450ms ease;
+    z-index: -1;
+  }
+
+  &:hover::after {
+    clip-path: circle(75% at 50% 50%);
+  }
+
+  &:hover {
+    color: #fbd44a;
+  }
+}
+
+.nav-center-yellow-fill {
+  position: relative;
+  overflow: hidden;
+  background-color: #191919;
+  //border: 2px solid #fbd44a;
+  color: #fcf9ee;
+  transition: color 300ms ease;
+  z-index: 0;
+
+  /* Black overlay layer */
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: #fbd44a;
+    clip-path: circle(0% at 50% 50%);
+    transition: clip-path 450ms ease;
+    z-index: -1;
+  }
+
+  &:hover::after {
+    clip-path: circle(75% at 50% 50%);
+  }
+
+  &:hover {
+    color: #191919;
+  }
+}
