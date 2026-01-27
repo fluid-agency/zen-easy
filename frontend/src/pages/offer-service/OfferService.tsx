@@ -32,7 +32,6 @@ export type TRating = {
   feedback: string;
 };
 
-
 type ProfessionalServiceFormData = Omit<TProfessinalService, 'provider' | 'minimumPrice' | 'maximumPrice' | 'availableDays' | 'availableTime' | 'coverImage' | 'ratings' | 'status' | 'serviceArea'> & {
   serviceAreas: { value: string }[];
   priceRange: {
@@ -42,9 +41,8 @@ type ProfessionalServiceFormData = Omit<TProfessinalService, 'provider' | 'minim
   dayOfWeek: string[];
   availableTimes: "day" | "night" | "always";
   coverImageFile?: FileList;
-
   certificateFile: FileList;
-  certificate?: string; // S3 URL
+  certificate?: string;
 };
 
 const OfferService = () => {
@@ -63,8 +61,14 @@ const OfferService = () => {
     setError,
     formState: { errors },
   } = useForm<ProfessionalServiceFormData>({
+    shouldUnregister: false,
     defaultValues: {
       serviceAreas: [{ value: "" }],
+      dayOfWeek: [],
+      priceRange: {
+        min: 0,
+        max: 0
+      }
     },
   });
 
@@ -81,63 +85,65 @@ const OfferService = () => {
   });
 
   const watchedCoverImageFile = watch("coverImageFile");
-  const firstServiceAreaValue = watch(`serviceAreas.0.value`);
 
+  // Debugging: This will help you see if validation is blocking submission
+  const onError = (errors: any) => {
+    console.log("Form Validation Errors:", errors);
+  };
 
   useEffect(() => {
     if (watchedCoverImageFile && watchedCoverImageFile.length > 0) {
       const file = watchedCoverImageFile[0];
       if (file) {
-        setCoverImagePreview(URL.createObjectURL(file));
+        const previewUrl = URL.createObjectURL(file);
+        setCoverImagePreview(previewUrl);
+
+        // Cleanup function
+        return () => {
+          URL.revokeObjectURL(previewUrl);
+        };
       }
     } else {
       setCoverImagePreview(null);
     }
-    return () => {
-      if (coverImagePreview) {
-        URL.revokeObjectURL(coverImagePreview);
-      }
-    };
-  }, [watchedCoverImageFile , coverImagePreview]);
+  }, [watchedCoverImageFile]);
 
   // ---------------Handle form submission----------------
+  const onSubmit: SubmitHandler<ProfessionalServiceFormData> = async (data) => {
+    try {
+      if (data.priceRange.min >= data.priceRange.max) {
+        setError("priceRange.max", {
+          type: "manual",
+          message: "Maximum price must be greater than minimum price",
+        });
+        return;
+      }
 
+      if (!data.certificateFile?.[0]) {
+        setError("certificateFile", {
+          type: "manual",
+          message: "Certificate is required",
+        });
+        return;
+      }
 
-const onSubmit: SubmitHandler<ProfessionalServiceFormData> = async (data) => {
-  try {
-    if (data.priceRange.min >= data.priceRange.max) {
-      setError("priceRange.max", {
-        type: "manual",
-        message: "Maximum price must be greater than minimum price",
-      });
-      return;
+      // 🔥 1️⃣ Upload certificate to S3
+      const certificateUrl = await uploadCertificate(
+        data.certificateFile[0]
+      );
+
+      // 🔥 2️⃣ Inject URL into payload
+      const payload = {
+        ...data,
+        certificate: certificateUrl,
+      };
+
+      // 🔥 3️⃣ Now save service
+      await offerService(selfId as string, payload);
+    } catch (error) {
+      console.error("Offer service failed:", error);
     }
-
-    if (!data.certificateFile?.[0]) {
-      setError("certificateFile", {
-        type: "manual",
-        message: "Certificate is required",
-      });
-      return;
-    }
-
-    // 🔥 1️⃣ Upload certificate to S3
-    const certificateUrl = await uploadCertificate(
-      data.certificateFile[0]
-    );
-
-    // 🔥 2️⃣ Inject URL into payload
-    const payload = {
-      ...data,
-      certificate: certificateUrl,
-    };
-
-    // 🔥 3️⃣ Now save service
-    await offerService(selfId as string, payload);
-  } catch (error) {
-    console.error("Offer service failed:", error);
-  }
-};
+  };
 
 
   useEffect(() => {
@@ -145,7 +151,7 @@ const onSubmit: SubmitHandler<ProfessionalServiceFormData> = async (data) => {
       showSuccess("Professional Profile created", 1000)
       window.location.href = `/main/prof-profile/${selfId}`;
     }
-  }, [success , selfId, showSuccess])
+  }, [success, selfId, showSuccess])
   // ------------------------
   useEffect(() => {
     const getProfessionalInfo = async () => {
@@ -164,58 +170,60 @@ const onSubmit: SubmitHandler<ProfessionalServiceFormData> = async (data) => {
     getProfessionalInfo();
   }, [selfId]);
 
-
-  // ---------------------- return div --------------------
   return (
-    <div className="offer-service-container">
-      <div className="header-section">
-        <div className="profile-status">
-          {professions?.length === 0 ? (
-            <div className="no-profile">
-              <div className="status-icon">👤</div>
-              <h3>No Professional Profile</h3>
-              <p>Create your first professional service profile</p>
-            </div>
-          ) : (
-            <div className="has-profile">
-              <div className="status-icon">✅</div>
-              <h3>Current Profession{professions.length > 1 ? "s" : ""}</h3>
-              <p>You are currently working as:{" "}
-                <span className="profession-name">
-                  {professions.map((prof, index) => (
-                    <span key={index}>{prof.category}{index < professions.length - 1 && ", "}</span>
-                  ))}
-                </span>
-              </p>
-            </div>
-          )}
+    <div className="offer-service-compact">
+      <div className="compact-header">
+        <div className="profile-badge">
+          <div className="badge-icon">
+            {professions?.length === 0 ? "➕" : "👤"}
+          </div>
+          <div className="badge-content">
+            <h3>
+              {professions?.length === 0
+                ? "No Professional Profile"
+                : `Current Profession${professions.length > 1 ? "s" : ""}`}
+            </h3>
+            <p>
+              {professions?.length === 0
+                ? "Create your first professional service profile"
+                : `You are currently working as: ${professions.map((prof, index) =>
+                  `${prof.category}${index < professions.length - 1 ? ", " : ""}`
+                )}`}
+            </p>
+          </div>
         </div>
       </div>
 
-      <div className="service-form-section">
-        {professions?.length >= 2 ? (
-          <div className="limit-reached">
-            <div className="warning-icon">⚠️</div>
-            <h3>Professional Profile's Limit Reached</h3>
-            <p>You are not allowed to offer more than two services simultaneously.</p>
+      {professions?.length >= 2 ? (
+        <div className="limit-card">
+          <div className="warning-badge">⚠️</div>
+          <h3>Limit Reached</h3>
+          <p>Maximum 2 services allowed</p>
+        </div>
+      ) : (
+        <div className="compact-form-container">
+          <div className="form-header">
+            <h2>Add New Service</h2>
+            <p>Fill in your service details</p>
           </div>
-        ) : (
-          <div className="add-service">
-            <div className="form-header">
-              <h2>Add New Service</h2>
-            </div>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="service-form">
-              <div className="form-grid">
-                {/* Service Category Selection */}
-                <div className="form-group full-width">
-                  <label htmlFor="category">Service Type</label>
+          <form
+            // ADDED onError here to debug failures
+            onSubmit={handleSubmit(onSubmit, onError)}
+            className="compact-form"
+            noValidate
+          >
+
+            <div className="form-sections">
+              {/* Left Column */}
+              <div className="form-column">
+                {/* Service Type */}
+                <div className="input-group floating">
                   <select
-                    id="category"
                     {...register("category", { required: "Please select a service type" })}
                     className={errors.category ? "error" : ""}
                   >
-                    <option value="">Choose your service</option>
+                    <option value="">Service Type</option>
                     <option value="Maid">🏠 Home Maid</option>
                     <option value="Home Shifter">🚚 Home Shifter</option>
                     <option value="Tutor">📚 Private Tutor</option>
@@ -224,16 +232,15 @@ const onSubmit: SubmitHandler<ProfessionalServiceFormData> = async (data) => {
                     <option value="Painter">🎨 Painter</option>
                     <option value="Plumber">🔧 Plumber</option>
                   </select>
+                  <label>Service Type *</label>
                   {errors.category && (
-                    <span className="error-message">{errors.category.message}</span>
+                    <span className="error-hint">{errors.category.message}</span>
                   )}
                 </div>
 
-                {/* Contact Number Input */}
-                <div className="form-group">
-                  <label htmlFor="contactNumber">Contact Number</label>
+                {/* Contact Number */}
+                <div className="input-group floating">
                   <input
-                    id="contactNumber"
                     type="tel"
                     {...register("contactNumber", {
                       required: "Contact number is required",
@@ -242,262 +249,284 @@ const onSubmit: SubmitHandler<ProfessionalServiceFormData> = async (data) => {
                         message: "Please enter a valid phone number"
                       }
                     })}
-                    placeholder="+880 1731588825"
                     className={errors.contactNumber ? "error" : ""}
                   />
+                  <label>Contact Number *</label>
                   {errors.contactNumber && (
-                    <span className="error-message">{errors.contactNumber.message}</span>
+                    <span className="error-hint">{errors.contactNumber.message}</span>
                   )}
                 </div>
 
-                {/* Address Line Input */}
-                <div className="form-group">
-                  <label htmlFor="addressLine">Full Address Line</label>
+                {/* Address */}
+                <div className="input-group floating">
                   <input
-                    id="addressLine"
                     type="text"
                     {...register("addressLine", { required: "Address line is required" })}
-                    placeholder="e.g., House 123, Road 4, Gulshan 1, Dhaka 1212"
                     className={errors.addressLine ? "error" : ""}
                   />
+                  <label>Full Address *</label>
                   {errors.addressLine && (
-                    <span className="error-message">{errors.addressLine.message}</span>
+                    <span className="error-hint">{errors.addressLine.message}</span>
                   )}
                 </div>
 
-                {/* Service Area Dynamic Inputs */}
-                <div className="form-group service-areas-group full-width">
-                  <label>Service Areas</label>
+                {/* Service Areas */}
+                <div className="dynamic-input-group">
+                  <label>Service Areas *</label>
                   {fields.map((field, index) => (
-                    <div key={field.id} className="service-area-item">
+                    <div key={field.id} className="tag-input">
                       <input
                         type="text"
                         {...register(`serviceAreas.${index}.value`, {
                           required: "Service area cannot be empty",
-                          minLength: { value: 3, message: "Service area must be at least 3 characters" }
+                          minLength: { value: 3, message: "At least 3 characters" }
                         })}
-                        placeholder={`Service Area ${index + 1}`}
+                        placeholder="Service area"
                         className={errors.serviceAreas?.[index]?.value ? "error" : ""}
                       />
                       {fields.length > 1 && (
-                        <button type="button" onClick={() => remove(index)} className="remove-area-btn">
-                          &times;
+                        <button
+                          type="button"
+                          onClick={() => remove(index)}
+                          className="tag-remove"
+                        >
+                          ×
                         </button>
-                      )}
-                      {errors.serviceAreas?.[index]?.value && (
-                        <span className="error-message">{errors.serviceAreas[index]?.value?.message}</span>
                       )}
                     </div>
                   ))}
-                  {/*"Add Another Area"  */}
-                  {(firstServiceAreaValue && firstServiceAreaValue.trim().length > 0) || fields.length > 1 ? (
-                    <button
-                      type="button"
-                      onClick={() => append({ value: "" })}
-                      className="add-another-area-btn btn-secondary"
-                    >
-                      Add Another Area
-                    </button>
-                  ) : null}
-
-                  {/*  validation message for serviceAreas array */}
+                  <button
+                    type="button"
+                    onClick={() => append({ value: "" })}
+                    className="add-tag-btn"
+                  >
+                    + Add Area
+                  </button>
                   {errors.serviceAreas && typeof errors.serviceAreas.message === 'string' && (
-                    <span className="error-message full-width">{errors.serviceAreas.message}</span>
+                    <span className="error-hint">{errors.serviceAreas.message}</span>
                   )}
                 </div>
 
-                {/* certificate field */}
-                <div className="form-group full-width">
-                  <label>Certificate (PDF / Image)</label>
-                  <input
-                    type="file"
-                    accept="application/pdf,image/*"
-                    {...register("certificateFile", {
-                      required: "Certificate is required",
-                      validate: {
-                        fileType: (files) =>
-                          files &&
-                            ["application/pdf", "image/jpeg", "image/png"].includes(files[0].type)
-                            ? true
-                            : "Only PDF or image allowed",
-                        fileSize: (files) =>
-                          files && files[0].size <= 5 * 1024 * 1024
-                            ? true
-                            : "Max 5MB allowed",
-                      },
-                    })}
-                  />
-                  {errors.certificateFile && (
-                    <span className="error-message">
-                      {errors.certificateFile.message}
-                    </span>
-                  )}
-                </div>
-
-
-                {/* Cover Image Upload Field */}
-                <div className="form-group full-width">
-                  <label htmlFor="coverImage">Cover Image (optional)</label>
-                  <input
-                    id="coverImage"
-                    type="file"
-                    accept="image/*"
-                    {...register("coverImageFile", {
-                      validate: {
-                        fileType: (value) => {
-                          if (value && value.length > 0) {
-                            const file = value[0];
-                            const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-                            if (!allowedTypes.includes(file.type)) {
-                              return "Only JPEG, PNG, or GIF images are allowed.";
-                            }
-                            const maxSize = 5 * 1024 * 1024; // 5MB
-                            if (file.size > maxSize) {
-                              return "Image size must be less than 5MB.";
-                            }
-                          }
-                          return true;
-                        },
-                      },
-                    })}
-                    className={errors.coverImageFile ? "error" : ""}
-                  />
-                  {errors.coverImageFile && (
-                    <span className="error-message">{errors.coverImageFile.message}</span>
-                  )}
-                  {coverImagePreview && (
-                    <div className="image-preview">
-                      <img src={coverImagePreview} alt="Cover Preview" />
-                    </div>
-                  )}
-                </div>
-
-                {/* Description Textarea */}
-                <div className="form-group full-width">
-                  <label htmlFor="description">Service Description</label>
+                {/* Description */}
+                <div className="input-group floating">
                   <textarea
-                    id="description"
                     {...register("description", {
                       required: "Please describe your service",
                       minLength: {
                         value: 20,
-                        message: "Description should be at least 20 characters"
+                        message: "At least 20 characters"
                       },
                       maxLength: {
                         value: 1000,
-                        message: "Description cannot exceed 1000 characters"
+                        message: "Max 1000 characters"
                       }
                     })}
-                    placeholder="Describe your service, experience, and what makes you unique..."
                     rows={4}
                     className={errors.description ? "error" : ""}
                   />
+                  <label>Service Description *</label>
                   {errors.description && (
-                    <span className="error-message">{errors.description.message}</span>
+                    <span className="error-hint">{errors.description.message}</span>
                   )}
                 </div>
+              </div>
 
-                {/* Minimum Price Input */}
-                <div className="form-group">
-                  <label htmlFor="minPrice">Minimum Price (BDT)</label>
-                  <input
-                    id="minPrice"
-                    type="number"
-                    {...register("priceRange.min", {
-                      required: "Minimum price is required",
-                      min: { value: 1, message: "Price must be greater than 0" },
-                      valueAsNumber: true,
-                    })}
-                    placeholder="500"
-                    className={errors.priceRange?.min ? "error" : ""}
-                  />
+              {/* Right Column */}
+              <div className="form-column">
+                {/* Price Range */}
+                <div className="price-range-group">
+                  <label>Price Range (BDT) *</label>
+                  <div className="price-inputs">
+                    <div className="input-group floating small">
+                      <input
+                        type="number"
+                        {...register("priceRange.min", {
+                          required: "Min price required",
+                          min: { value: 1, message: "Must be > 0" },
+                          valueAsNumber: true,
+                        })}
+                        className={errors.priceRange?.min ? "error" : ""}
+                      />
+                      <label>Min</label>
+                    </div>
+                    <div className="range-separator">to</div>
+                    <div className="input-group floating small">
+                      <input
+                        type="number"
+                        {...register("priceRange.max", {
+                          required: "Max price required",
+                          min: { value: 1, message: "Must be > 0" },
+                          valueAsNumber: true,
+                        })}
+                        className={errors.priceRange?.max ? "error" : ""}
+                      />
+                      <label>Max</label>
+                    </div>
+                  </div>
                   {errors.priceRange?.min && (
-                    <span className="error-message">{errors.priceRange.min.message}</span>
+                    <span className="error-hint">{errors.priceRange.min.message}</span>
                   )}
-                </div>
-
-                {/* Maximum Price Input */}
-                <div className="form-group">
-                  <label htmlFor="maxPrice">Maximum Price (BDT)</label>
-                  <input
-                    id="maxPrice"
-                    type="number"
-                    {...register("priceRange.max", {
-                      required: "Maximum price is required",
-                      min: { value: 1, message: "Price must be greater than 0" },
-                      valueAsNumber: true,
-                    })}
-                    placeholder="2000"
-                    className={errors.priceRange?.max ? "error" : ""}
-                  />
                   {errors.priceRange?.max && (
-                    <span className="error-message">{errors.priceRange.max.message}</span>
+                    <span className="error-hint">{errors.priceRange.max.message}</span>
                   )}
                 </div>
 
-                {/* Available Days Checkboxes */}
-                <div className="form-group full-width">
-                  <label>Available Days</label>
-                  <div className="checkbox-group">
+                {/* Available Days */}
+                <div className="checkbox-group compact">
+                  <label>Available Days *</label>
+                  <div className="day-pills">
                     {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map((day) => (
-                      <label key={day} className="checkbox-item">
+                      <label key={day} className="day-pill">
                         <input
                           type="checkbox"
                           value={day}
-                          {...register("dayOfWeek", { required: "Please select at least one day" })}
+                          {...register("dayOfWeek", { required: "Select at least one day" })}
                         />
-                        <span className="checkmark"></span>
-                        {day}
+                        <span className="pill-label">{day.slice(0, 3)}</span>
                       </label>
                     ))}
                   </div>
                   {errors.dayOfWeek && (
-                    <span className="error-message">{errors.dayOfWeek.message}</span>
+                    <span className="error-hint">{errors.dayOfWeek.message}</span>
                   )}
                 </div>
 
-                {/* Available Time Radio Buttons */}
-                <div className="form-group full-width">
-                  <label>Available Time</label>
-                  <div className="radio-group">
+                {/* Available Time */}
+                <div className="radio-group compact">
+                  <label>Available Time *</label>
+                  <div className="time-options">
                     {[
-                      { value: "day", label: "Day Time", icon: "☀️" },
-                      { value: "night", label: "Night Time", icon: "🌙" },
-                      { value: "always", label: "24/7 Available", icon: "🕐" }
+                      { value: "day", label: "Day", icon: "☀️" },
+                      { value: "night", label: "Night", icon: "🌙" },
+                      { value: "always", label: "24/7", icon: "🕐" }
                     ].map((time) => (
-                      <label key={time.value} className="radio-item">
+                      <label key={time.value} className="time-option">
                         <input
                           type="radio"
                           value={time.value}
-                          {...register("availableTimes", { required: "Please select your availability" })}
+                          {...register("availableTimes", { required: "Please select availability" })}
                         />
-                        <span className="radio-mark"></span>
-                        <div className="radio-content">
-                          <span className="radio-icon">{time.icon}</span>
-                          <span className="radio-label">{time.label}</span>
+                        <div className="option-content">
+                          <span className="option-icon">{time.icon}</span>
+                          <span className="option-label">{time.label}</span>
                         </div>
                       </label>
                     ))}
                   </div>
                   {errors.availableTimes && (
-                    <span className="error-message">{errors.availableTimes.message}</span>
+                    <span className="error-hint">{errors.availableTimes.message}</span>
+                  )}
+                </div>
+
+                {/* Certificate */}
+                <div className="file-upload-group">
+                  <label>Certificate (PDF / Image) *</label>
+                  <div className="file-upload">
+                    <input
+                      id="certificate-upload"
+                      type="file"
+                      accept="application/pdf,image/*"
+                      {...register("certificateFile", {
+                        required: "Certificate is required",
+                        validate: {
+                          fileType: (files) => {
+                            if (!files?.[0]) return "Certificate is required";
+                            return ["application/pdf", "image/jpeg", "image/png"].includes(files[0].type)
+                              ? true
+                              : "Only PDF or image allowed";
+                          },
+                          fileSize: (files) =>
+                            files && files[0].size <= 5 * 1024 * 1024
+                              ? true
+                              : "Max 5MB allowed",
+                        },
+                      })}
+                    />
+
+                    <label htmlFor="certificate-upload" className="file-info">
+                      {watch("certificateFile")?.[0]?.name || "Upload PDF or Image (max 5MB)"}
+                    </label>
+                  </div>
+                  {/* 🔥 ADDED MISSING ERROR DISPLAY */}
+                  {errors.certificateFile && (
+                    <span className="error-hint" style={{ color: "red", display: "block", marginTop: "5px" }}>
+                      {errors.certificateFile.message}
+                    </span>
+                  )}
+                </div>
+
+                {/* Cover Image */}
+                <div className="image-upload-group">
+                  <label>Cover Image (optional)</label>
+                  <div className="image-upload">
+                    <input
+                      id="cover-upload"
+                      type="file"
+                      accept="image/*"
+                      {...register("coverImageFile", {
+                        validate: {
+                          fileType: (value) => {
+                            if (value && value.length > 0) {
+                              const file = value[0];
+                              if (!["image/jpeg", "image/png", "image/gif"].includes(file.type)) {
+                                return "Only JPEG, PNG, or GIF images";
+                              }
+                              if (file.size > 5 * 1024 * 1024) {
+                                return "Image must be < 5MB";
+                              }
+                            }
+                            return true;
+                          },
+                        },
+                      })}
+                    />
+
+                    <label htmlFor="cover-upload" className="upload-prompt">
+                      {coverImagePreview ? (
+                        <div className="image-preview">
+                          <img src={coverImagePreview} alt="Preview" />
+                          <div className="preview-overlay">Change Image</div>
+                        </div>
+                      ) : (
+                        <>
+                          <div className="upload-icon">📷</div>
+                          <div className="upload-text">
+                            {watch("coverImageFile")?.[0]?.name || "Upload Cover Image"}
+                          </div>
+                        </>
+                      )}
+                    </label>
+                  </div>
+                  {/* 🔥 ADDED MISSING ERROR DISPLAY */}
+                  {errors.coverImageFile && (
+                    <span className="error-hint" style={{ color: "red", display: "block", marginTop: "5px" }}>
+                      {errors.coverImageFile.message}
+                    </span>
                   )}
                 </div>
               </div>
+            </div>
 
-              <div className="form-actions">
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="submit-btn btn-primary"
-                >
-                  {loading ? "Publishing..." : "Publish Service"}
-                </button>
-              </div>
-            </form>
-          </div>
-        )}
-      </div>
+            {/* Submit Button */}
+            <div className="form-footer">
+              <button
+                type="submit"
+                disabled={loading}
+                className="submit-btn"
+              >
+                {loading ? (
+                  <span className="btn-loading">
+                    <span className="spinner"></span>
+                    Publishing...
+                  </span>
+                ) : (
+                  'Publish Service'
+                )}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
     </div>
   );
 };

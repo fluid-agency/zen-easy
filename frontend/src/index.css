@@ -5,8 +5,10 @@
 }
 
 :root {
-  --primary: #e4ed64;
-  --bg-primary: #fff9ea;
+  --primary: #e4ed64; /* Your yellow color */
+  --primary-rgb: 228, 237, 100; /* RGB values for rgba() */
+  --primary-hover: #d4dd54; /* Slightly darker yellow for hover */
+  --bg-primary: #f9f9f9; /* Your background color */
 }
 
 .primary {
