@@ -148,13 +148,13 @@ export const Pricing: React.FC<PricingProps> = ({ plans }) => {
             className={cn(
               "rounded-2xl border p-6 text-center relative shadow-sm flex flex-col justify-between",
               plan.isPopular
-                ? "border-none text-background p-6 lg:p-7 bg-gradient-to-br from-[#ffca16]/50 to-[#ffca16]/15 pointer-events-none"
-                : "border-gray-100 bg-gradient-to-br from-[#ffca16]/10 to-[#ffca16]/5 pointer-events-none"
+                ? "border-none text-background p-6 lg:p-7 bg-gradient-to-br from-[#ffca16]/40 to-[#fbd44a]/10 pointer-events-none"
+                : "border-gray-100 bg-gradient-to-br from-[#ffca16]/20 to-[#fbd44a]/5 pointer-events-none"
             )}
           >
             {plan.isPopular && (
               <div className="absolute top-2 right-2 bg-primary py-0.5 px-2 rounded-bl-xl rounded-tr-xl flex items-center">
-                <Star className="text-[#F3E07D] h-4 w-4 fill-current" />
+                <Star className="text-[#F9DB3E] h-4 w-4 fill-current" />
                 <span className="text-black ml-1 font-semibold">Popular</span>
               </div>
             )}

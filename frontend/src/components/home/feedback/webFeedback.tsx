@@ -273,7 +273,7 @@ export default function WebFeedback() {
                   </div>
 
                   {/* Verified Badge */}
-                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#ffca16]/5 backdrop-blur-sm border border-[#ffca16]/10">
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#ffca16]/5 backdrop-blur-sm border border-[#ffca16]">
                     <CheckCircle2 size={12} className="text-[#000000]" />
                     <span className="text-xs font-bold text-[#000000]/90">Verified</span>
                   </div>
@@ -313,7 +313,7 @@ export default function WebFeedback() {
       <motion.button
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
-        className="mt-12 px-8 py-3.5 bg-gradient-to-r from-[#ffca16] to-[#fbd44a] text-black font-medium rounded-full flex items-center gap-2 shadow-[0_4px_24px_rgba(255,202,22,0.25)] hover:shadow-[0_4px_32px_rgba(255,202,22,0.35)] transition-shadow"
+        className="mt-12 px-8 py-3.5 border-2 border-[#ffffff] bg-gradient-to-r from-[#ffca16] to-[#fbd44a]/70 text-black font-medium rounded-full flex items-center gap-2 shadow-[0_4px_24px_rgba(255,202,22,0.25)] hover:shadow-[0_4px_32px_rgba(255,202,22,0.35)] transition-shadow"
         onClick={() => setIsModalOpen(true)}
       >
         <MessageSquarePlus size={18} />
