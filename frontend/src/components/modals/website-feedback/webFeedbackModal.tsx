@@ -1,20 +1,25 @@
 import React, { useEffect } from "react";
-import { useForm,type SubmitHandler } from "react-hook-form";
+import { useForm, type SubmitHandler } from "react-hook-form";
 import "./webFeedbackModal.scss";
 import { useNotification } from "../../../context/notification/NotificationContext";
 
-// Form Data Type
-type ReviewFormData = {
-  serviceCategory: string;
-  rating: number;
-  comment: string;
+
+const getCookie = (name: string) => {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop()?.split(";").shift();
 };
 
-// Props Type
+type ReviewFormData = {
+  serviceCategory: string; 
+  rating: number;
+  comment: string; 
+};
+
 interface ReviewModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmitReview: (data: ReviewFormData) => Promise<void>;
+  onSubmitReview: (data: any) => Promise<void>;
 }
 
 const ReviewModal: React.FC<ReviewModalProps> = ({ isOpen, onClose, onSubmitReview }) => {
@@ -25,20 +30,31 @@ const ReviewModal: React.FC<ReviewModalProps> = ({ isOpen, onClose, onSubmitRevi
     reset,
     formState: { errors, isSubmitting },
   } = useForm<ReviewFormData>({
-    defaultValues: { rating: 5 }, // Default 5 star
+    defaultValues: { rating: 5 },
   });
 
   const { showSuccess, showError } = useNotification();
   const watchedRating = watch("rating");
 
-  // Modal bondho hole form reset hobe
   useEffect(() => {
     if (!isOpen) reset();
   }, [isOpen, reset]);
 
   const handleFormSubmit: SubmitHandler<ReviewFormData> = async (data) => {
     try {
-      await onSubmitReview(data);
+      const userId = getCookie("zenEasySelfId");
+
+      if (!userId) {
+        showError("User not identified. Please login again.");
+        return;
+      }
+      const feedbackPayload = {
+        user: userId,         
+        rating: data.rating,   
+        text: data.comment,   
+      };
+
+      await onSubmitReview(feedbackPayload);
       showSuccess("Thank you for your review!");
       onClose();
     } catch (err) {
@@ -52,24 +68,9 @@ const ReviewModal: React.FC<ReviewModalProps> = ({ isOpen, onClose, onSubmitRevi
     <div className="review-modal-overlay">
       <div className="review-modal-content">
         <button className="close-x" onClick={onClose}>&times;</button>
-        
         <h2>Rate Our Service</h2>
-        <p>Your feedback helps us grow!</p>
-
         <form onSubmit={handleSubmit(handleFormSubmit)}>
-          {/* Category Selection */}
-          <div className="form-group">
-            <label>Which service did you use?</label>
-            <select {...register("serviceCategory", { required: "Please select a category" })}>
-              <option value="">Select Category</option>
-              <option value="web-dev">Web Development</option>
-              <option value="ui-ux">UI/UX Design</option>
-              <option value="consulting">Consulting</option>
-            </select>
-            {errors.serviceCategory && <p className="error">{errors.serviceCategory.message}</p>}
-          </div>
-
-          {/* Star Rating */}
+          {/* Star Rating Section */}
           <div className="form-group">
             <label>Your Rating</label>
             <div className="star-group">
@@ -79,6 +80,7 @@ const ReviewModal: React.FC<ReviewModalProps> = ({ isOpen, onClose, onSubmitRevi
                     type="radio"
                     value={num}
                     {...register("rating", { valueAsNumber: true })}
+                    style={{ display: 'none' }}
                   />
                   <span className={`star ${num <= watchedRating ? "filled" : ""}`}>★</span>
                 </label>
@@ -86,7 +88,6 @@ const ReviewModal: React.FC<ReviewModalProps> = ({ isOpen, onClose, onSubmitRevi
             </div>
           </div>
 
-          {/* Comment box */}
           <div className="form-group">
             <label>Review Comment</label>
             <textarea
@@ -94,7 +95,7 @@ const ReviewModal: React.FC<ReviewModalProps> = ({ isOpen, onClose, onSubmitRevi
                 required: "Please write a comment",
                 minLength: { value: 10, message: "Min 10 characters required" }
               })}
-              placeholder="Tell us what you liked or how we can improve..."
+              placeholder="Tell us what you liked..."
               rows={4}
             />
             {errors.comment && <p className="error">{errors.comment.message}</p>}

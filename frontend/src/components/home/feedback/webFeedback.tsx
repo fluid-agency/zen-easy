@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import  { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Star, Quote, CheckCircle2, MessageSquarePlus } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import ReviewModal from '../../modals/website-feedback/webFeedbackModal';
+import { serverBaseUrl } from '../../../utils/baseUrl';
 
 // --- Utility for Tailwind classes ---
 function cn(...inputs: ClassValue[]) {
@@ -12,76 +13,62 @@ function cn(...inputs: ClassValue[]) {
 
 // --- Types ---
 interface Testimonial {
-  id: number;
+  _id: string;
   name: string;
   role: string;
-  company: string;
+  company?: string;
   image: string;
   rating: number;
   text: string;
 }
 
-// --- Mock Data ---
-const TESTIMONIALS: Testimonial[] = [
-  {
-    id: 1,
-    name: "Nafies Salim",
-    role: "Entrepreneur | Marketing Strategist",
-    company: "Founder, Impact Academy",
-    image: "https://i.pravatar.cc/150?u=nafies",
-    rating: 5,
-    text: "With avg 8/10, I literally love every varity specially the sweet ones.",
-  },
-  {
-    id: 2,
-    name: "Amin Hannan Chowdhury",
-    role: "Entrepreneur | Digital Creator",
-    company: "Founder, Idle Hunker",
-    image: "https://i.pravatar.cc/150?u=amin",
-    rating: 5,
-    text: "Love the durability. Made my ex comeback. Not sure if it's a good thing.",
-  },
-  {
-    id: 3,
-    name: "Khalid Farhan",
-    role: "Entrepreneur | Passive Income",
-    company: "Founder, Passive Journal",
-    image: "https://i.pravatar.cc/150?u=khalid",
-    rating: 4.5,
-    text: "I will give it average 7.5/10 & perfumes are good.",
-  },
-  {
-    id: 4,
-    name: "Ayman Sadiq",
-    role: "Educator | Public Speaker",
-    company: "Founder, 10 Minute School",
-    image: "https://i.pravatar.cc/150?u=ayman",
-    rating: 5,
-    text: "This is not a regular perfume , this is a new thing.",
-  },
-  {
-    id: 5,
-    name: "Rafayet Rakib",
-    role: "Content Creator",
-    company: "Founder, Digital Dropouts",
-    image: "https://i.pravatar.cc/150?u=rafayet",
-    rating: 5,
-    text: "Smells are good & it last longer also will rate avg 8/10.",
-  }
-];
 
 export default function WebFeedback() {
+  const [testimonials, settestimonials] = useState<Testimonial[]>([]);
   const [activeIndex, setActiveIndex] = useState<number>(1);
   const [isPaused, setIsPaused] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  //fetch backend feedbacks data
+  const fetchFeedbacks = async () => {
+    try {
+      const res = await serverBaseUrl.get("/feedbacks");
+
+      const formatted = res.data.data.map((item: any) => ({
+        _id: item._id,
+        name: item.user?.name || "Anonymous",
+        role: item.user?.occupation || "Customer",
+        company: "",
+        image:
+          item.user?.profileImage ||
+          `https://i.pravatar.cc/150?u=${item._id}`,
+        rating: item.rating,
+        text: item.text,
+      }));
+
+      settestimonials(formatted);
+    } catch (error) {
+      console.error("Failed to fetch feedbacks", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchFeedbacks();
+  }, []);
   // --- Navigation Handlers ---
   const handleNext = useCallback(() => {
-    setActiveIndex((prev) => (prev + 1) % TESTIMONIALS.length);
-  }, []);
+    if (testimonials.length === 0) return;
+
+    setActiveIndex((prev) => (prev + 1) % testimonials.length);
+  }, [testimonials.length]);
 
   const handlePrev = useCallback(() => {
-    setActiveIndex((prev) => (prev - 1 + TESTIMONIALS.length) % TESTIMONIALS.length);
-  }, []);
+    if (testimonials.length === 0) return;
+
+    setActiveIndex(
+      (prev) => (prev - 1 + testimonials.length) % testimonials.length
+    );
+  }, [testimonials.length]);
 
   // --- Auto Slide Effect ---
   useEffect(() => {
@@ -96,11 +83,11 @@ export default function WebFeedback() {
 
   // --- Position Logic ---
   const getPosition = (index: number) => {
-    const len = TESTIMONIALS.length;
+    const len = testimonials.length;
     let distance = (index - activeIndex + len) % len;
-    
+
     if (distance > len / 2) distance -= len;
-    
+
     return distance;
   };
 
@@ -120,12 +107,12 @@ export default function WebFeedback() {
         filter: "blur(0px)",
       };
     }
-    
+
     if (isNext) {
       return {
-        x: 300, 
+        x: 300,
         scale: 0.85,
-        rotateY: -25, 
+        rotateY: -25,
         zIndex: 10,
         opacity: 0.5,
         filter: "blur(2px)",
@@ -134,9 +121,9 @@ export default function WebFeedback() {
 
     if (isPrev) {
       return {
-        x: -300, 
+        x: -300,
         scale: 0.85,
-        rotateY: 25, 
+        rotateY: 25,
         zIndex: 10,
         opacity: 0.5,
         filter: "blur(2px)",
@@ -154,14 +141,19 @@ export default function WebFeedback() {
   };
 
   const handleReviewSubmit = async (data: any) => {
-    // Ekhane backend API call hobe
-    console.log("Saving review to DB:", data);
-    // const response = await api.post("/reviews", data);
+    try {
+      await serverBaseUrl.post("/feedbacks/create", data);
+      await fetchFeedbacks();
+      setActiveIndex(0);
+    } catch (error) {
+      console.error("Failed to submit review", error);
+      throw error;
+    }
   };
 
   return (
     <div className="min-h-screen bg-[#ffffff] text-neutral-900 flex flex-col items-center justify-center py-20 overflow-hidden">
-      
+
       {/* --- Section Header --- */}
       <div className="mb-16 text-center relative z-10">
         <h2 className="text-5xl md:text-6xl font-light tracking-tight text-neutral-900">
@@ -171,21 +163,21 @@ export default function WebFeedback() {
       </div>
 
       {/* --- Carousel Container --- */}
-      <div 
+      <div
         className="relative w-full max-w-6xl h-[520px] flex items-center justify-center"
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
       >
-        
+
         {/* Navigation Buttons */}
-        <button 
+        <button
           onClick={handlePrev}
           className="absolute left-4 md:left-12 z-50 p-3 rounded-full bg-white/80 backdrop-blur-md border border-neutral-200 hover:bg-[#ffca16]/10 hover:border-[#ffca16]/30 transition-all group shadow-sm"
         >
           <ChevronLeft className="w-5 h-5 text-neutral-600 group-hover:text-[#ffca16]" />
         </button>
 
-        <button 
+        <button
           onClick={handleNext}
           className="absolute right-4 md:right-12 z-50 p-3 rounded-full bg-white/80 backdrop-blur-md border border-neutral-200 hover:bg-[#ffca16]/10 hover:border-[#ffca16]/30 transition-all group shadow-sm"
         >
@@ -194,19 +186,19 @@ export default function WebFeedback() {
 
         {/* Cards Wrapper */}
         <div className="relative w-full h-full flex justify-center items-center">
-          {TESTIMONIALS.map((testimonial, index) => {
+          {testimonials.map((testimonial, index) => {
             const position = getPosition(index);
-            
+
             if (Math.abs(position) > 2) return null;
 
             return (
               <motion.div
-                key={testimonial.id}
+                key={testimonial._id}
                 initial={false}
                 animate={getCardStyle(position)}
                 transition={{
                   duration: 0.6,
-                  ease: [0.4, 0, 0.2, 1], 
+                  ease: [0.4, 0, 0.2, 1],
                 }}
                 className={cn(
                   "absolute w-[340px] md:w-[420px] h-[440px] rounded-2xl p-8 flex flex-col",
@@ -232,8 +224,8 @@ export default function WebFeedback() {
                 <div className="relative z-10 flex items-start gap-4 mb-6">
                   <div className="relative shrink-0">
                     <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#ffca16]/30 to-[#fbd44a]/30 blur-sm"></div>
-                    <img 
-                      src={testimonial.image} 
+                    <img
+                      src={testimonial.image}
                       alt={testimonial.name}
                       className="relative w-14 h-14 rounded-full object-cover border border-[#ffca16]/20"
                     />
@@ -263,10 +255,10 @@ export default function WebFeedback() {
                   {/* Star Rating */}
                   <div className="flex gap-1">
                     {[...Array(5)].map((_, i) => (
-                      <Star 
-                        key={i} 
-                        size={16} 
-                        fill={i < Math.floor(testimonial.rating) ? "#ffca16" : "none"} 
+                      <Star
+                        key={i}
+                        size={16}
+                        fill={i < Math.floor(testimonial.rating) ? "#ffca16" : "none"}
                         className={i < Math.floor(testimonial.rating) ? "text-[#ffca16]" : "text-white/20"}
                       />
                     ))}
@@ -278,10 +270,10 @@ export default function WebFeedback() {
                     <span className="text-xs font-bold text-[#000000]/90">Verified</span>
                   </div>
                 </div>
-                
+
                 {/* Active Card Glow */}
                 {position === 0 && (
-                  <motion.div 
+                  <motion.div
                     layoutId="glow"
                     className="absolute inset-0 -z-10 rounded-2xl bg-[#ffca16]/10 blur-2xl"
                   />
@@ -291,17 +283,17 @@ export default function WebFeedback() {
           })}
         </div>
       </div>
-      
+
       {/* --- Pagination Dots --- */}
       <div className="flex gap-2 mt-8 z-20">
-        {TESTIMONIALS.map((_, i) => (
+        {testimonials.map((_, i) => (
           <button
             key={i}
             onClick={() => setActiveIndex(i)}
             className={cn(
               "h-1.5 rounded-full transition-all duration-300",
-              activeIndex === i 
-                ? "w-8 bg-[#ffca16]" 
+              activeIndex === i
+                ? "w-8 bg-[#ffca16]"
                 : "w-1.5 bg-white/20 hover:bg-white/40"
             )}
             aria-label={`Go to slide ${i + 1}`}
@@ -320,9 +312,9 @@ export default function WebFeedback() {
         <span>Give Feedback</span>
       </motion.button>
 
-      <ReviewModal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
+      <ReviewModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
         onSubmitReview={handleReviewSubmit
         }
       />
