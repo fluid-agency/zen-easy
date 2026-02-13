@@ -4,9 +4,9 @@ import { serverBaseUrl } from "../utils/baseUrl";
 export const getRentPosts = async () => {
   try {
     const response = await serverBaseUrl.get(`rent/rent-posts`, {
-    //   headers: {
-    //     Authorization: `${token}`,
-    //   },
+      //   headers: {
+      //     Authorization: `${token}`,
+      //   },
     });
     const result = response?.data;
     return result;
@@ -18,25 +18,37 @@ export const getRentPosts = async () => {
 
 
 //view rent post's details
-export const getRentDetails = async(id : string)=>{
-  try{
+export const getRentDetails = async (id: string) => {
+  try {
     const response = await serverBaseUrl.get(`/rent/view-details/${id}`)
     const result = response?.data;
     return result;
-  }catch(error){
+  } catch (error) {
     console.error("Failed to fetch the rent details");
     return null;
   }
 }
 
+//update a rent status as booked
+export const updateRentStatus = async (id: string, status: string) => {
+  try {
+    const response = await serverBaseUrl.patch(`/rent/update-status/${id}`, { status: status })
+    const result = response?.data;
+    return result;
+  } catch (error) {
+    console.error("Failed to update the rent status");
+    return null;
+  }
+}
+
 //delete a rent post
-export const deleteRentPost = async(id:string)=>{
-  try{
+export const deleteRentPost = async (id: string) => {
+  try {
     console.log("request going......");
     const response = await serverBaseUrl.delete(`/rent/delete/${id}`)
     const result = response?.data;
     return result;
-  }catch(error){
+  } catch (error) {
     console.log("Failed to delete rent post");
     return null;
   }

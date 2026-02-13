@@ -1,7 +1,7 @@
 import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import "./RentDetails.scss";
-import { deleteRentPost, getRentDetails } from "../../services/rentServices";
+import { deleteRentPost, getRentDetails, updateRentStatus } from "../../services/rentServices";
 import Cookies from "js-cookie";
 import OrbitalSpinner from "../../components/ui/LoadingSpinner";
 import { useNotification } from "../../context/notification/NotificationContext";
@@ -13,14 +13,14 @@ const RentDetailsPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const selfId = Cookies.get("zenEasySelfId") || "";
-  const {showSuccess} = useNotification();
+  const { showSuccess } = useNotification();
 
   // ------scroll to top----------
-   useEffect(() => {
+  useEffect(() => {
     window.scrollTo({
       top: 0,
       left: 0,
-      behavior: 'auto' 
+      behavior: 'auto'
     });
   }, [id])
 
@@ -67,14 +67,14 @@ const RentDetailsPage = () => {
   };
 
   if (loading) {
-    return <div className="rent-details-container min-w-full min-h-screen flex justify-center items-center loading-state"><OrbitalSpinner/></div>;
+    return <div className="rent-details-container min-w-full min-h-screen flex justify-center items-center loading-state"><OrbitalSpinner /></div>;
   }
 
   if (error) {
     return (
       <div className="rent-details-container text-yellow-500 font-semibold flex justify-center items-center flex-col min-h-screen min-w-[100vw] error-state">
         <p>Error: {error}</p>
-        <button onClick={() => window.location.href="/main/rent"} className="retry-btn">
+        <button onClick={() => window.location.href = "/main/rent"} className="retry-btn">
           Back
         </button>
       </div>
@@ -85,14 +85,37 @@ const RentDetailsPage = () => {
     return <div className="rent-details-container no-data-state">No details available for this property.</div>;
   }
 
-  const handleDelete = async(id:string) => {
-     const result = await deleteRentPost(id); 
-     showSuccess("Rent post deleted successfully", 2000)
-     if(result.success){
+  const handleUpdateStatus = async (id: string) => {
+    try {
+      const result = await updateRentStatus(id, "Booked");
+      console.log(result)
+
+      if (result?.success) {
+        showSuccess("Rent post updated successfully", 2000);
+
+        setRentProperty((prev: any) => ({
+          ...prev,
+          status: "Booked",
+        }));
+
+        // optional redirect
+        // setTimeout(() => {
+        //   window.location.href = "/main/rent";
+        // }, 2000);
+      }
+    } catch (err) {
+      console.error("Update failed", err);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    const result = await deleteRentPost(id);
+    showSuccess("Rent post deleted successfully", 2000)
+    if (result.success) {
       setTimeout(() => {
-        window.location.href="/main/rent"
+        window.location.href = "/main/rent"
       }, 2000);
-     }
+    }
   };
 
   return (
@@ -153,22 +176,40 @@ const RentDetailsPage = () => {
             <ul className="key-info-list">
               <li><strong>Category:</strong> {rentProperty.category.replace(/\b\w/g, (char: string) => char.toUpperCase())}</li>
               <li><strong>Rent:</strong> BDT {rentProperty.cost} / {rentProperty.rentPaymentFrequency}</li>
-              <li><strong>Available From:</strong> {new Date(rentProperty.rentStartDate).toLocaleDateString('en-GB', {year: 'numeric', month: 'long', day: 'numeric'})}</li>
-              <li><strong>Posted On:</strong> {new Date(rentProperty.createdAt).toLocaleDateString('en-GB', {year: 'numeric', month: 'long', day: 'numeric'})}</li>
+              <li><strong>Available From:</strong> {new Date(rentProperty.rentStartDate).toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' })}</li>
+              <li><strong>Posted On:</strong> {new Date(rentProperty.createdAt).toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' })}</li>
               <li><strong>Contact:</strong> {rentProperty.contactInfo}</li>
               <li><strong>Posted by:</strong><Link className="primary font-semibold cursor-pointer" to={`/main/profile/${rentProperty?.user?._id}`}> {rentProperty?.user?.name}</Link></li>
             </ul>
           </div>
         </div>
+        {
+          <div>
+            {rentProperty.status === "Booked" && (
+              <div className="rent-actions">
+                <button disabled className="bg-gray-300 px-4 py-3 rounded-lg text-slate-500 font-semibold my-4"> Already Booked</button>
+              </div>
+            )}
+          </div>
+        }
 
         {/* Action Buttons */}
-        {
-          selfId === rentProperty?.user?._id && (
-            <div className="rent-actions">
-              <button onClick={()=>handleDelete(rentProperty?._id)} className="delete-btn">Delete Listing</button>
-            </div>
-          )
-        }
+        <div className="flex items-center justify-center gap-3">
+          {
+            selfId === rentProperty?.user?._id && rentProperty.status !== "Booked" && (
+              <div className="rent-actions">
+                <button onClick={() => handleUpdateStatus(rentProperty?._id)} className="edit-btn">Mark As Booked</button>
+              </div>
+            )
+          }
+          {
+            selfId === rentProperty?.user?._id && (
+              <div className="rent-actions">
+                <button onClick={() => handleDelete(rentProperty?._id)} className="delete-btn">Delete Listing</button>
+              </div>
+            )
+          }
+        </div>
       </div>
     </div>
   );

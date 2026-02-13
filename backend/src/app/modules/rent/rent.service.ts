@@ -32,7 +32,7 @@ const createRentAd = async (payload: TRent) => {
 
 //update rent ad status
 const updateRentAdStatus = async (_id: string, status: string) => {
-  const result = Rent.findByIdAndUpdate(_id, { status: status }, { new: true });
+  const result = await Rent.findByIdAndUpdate(_id, { status: status }, { new: true });
   return result;
 };
 

@@ -57,7 +57,7 @@ const createNewRentAd = catchAsync(
 
 //update rent post status 
 const updateRentPostStatus = catchAsync(async(req,res)=>{
-  const result = await rentServices.updateRentAdStatus(req?.params?.id, req?.body?.rentPostStatus);
+  const result = await rentServices.updateRentAdStatus(req?.params?.id, req?.body?.status);
   if(result){
       sendResponse(res, {
         success: true,
