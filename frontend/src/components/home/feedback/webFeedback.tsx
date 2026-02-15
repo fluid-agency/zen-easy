@@ -293,8 +293,8 @@ export default function WebFeedback() {
             className={cn(
               "h-1.5 rounded-full transition-all duration-300",
               activeIndex === i
-                ? "w-8 bg-[#ffca16]"
-                : "w-1.5 bg-white/20 hover:bg-white/40"
+                ? "w-8 bg-[var(--primary)]"
+                : "w-1.5 bg-[var(--primary)] hover:bg-[#000000]"
             )}
             aria-label={`Go to slide ${i + 1}`}
           />

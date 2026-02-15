@@ -4,11 +4,11 @@
   left: 0px;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.6); 
+  background-color: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000; 
+  z-index: 1000;
   backdrop-filter: blur(6px);
   animation: fadeIn 0.3s ease-out forwards;
 }
@@ -16,11 +16,11 @@
 /* Modal Content */
 .feedback-modal-content {
   background-color: #ffffff;
-  padding: 40px; 
-  border-radius: 18px; 
-  box-shadow: 0px 15px 40px rgba(0, 0, 0, 0.2); 
+  padding: 40px;
+  border-radius: 18px;
+  box-shadow: 0px 15px 40px rgba(0, 0, 0, 0.2);
   width: 90%;
-  max-width: 550px; 
+  max-width: 550px;
   position: relative;
   animation: slideInFromTop 0.4s ease-out forwards;
   display: flex;
@@ -34,7 +34,7 @@
   right: 15px;
   background: none;
   border: none;
-  font-size: 32px; 
+  font-size: 32px;
   color: #888;
   cursor: pointer;
   padding: 5px;
@@ -49,7 +49,7 @@
 
 /* Modal Header */
 .modal-title {
-  font-size: 32px; 
+  font-size: 32px;
   font-weight: 800;
   color: #1a1a1a;
   margin-bottom: 8px;
@@ -59,21 +59,21 @@
 .modal-subtitle {
   font-size: 16px;
   color: #666;
-  margin-bottom: 30px; 
+  margin-bottom: 30px;
   text-align: center;
-  font-weight: 500; 
+  font-weight: 500;
 }
 
 /* Form Styling */
 .feedback-form {
   display: flex;
   flex-direction: column;
-  gap: 20px; 
+  gap: 20px;
 
   .form-group {
     display: flex;
     flex-direction: column;
-    position: relative; 
+    position: relative;
 
     label {
       font-size: 15px;
@@ -88,12 +88,12 @@
     select {
       padding: 12px 15px;
       border: 1px solid #ddd;
-      border-radius: 10px; 
+      border-radius: 10px;
       font-size: 16px;
       outline: none;
       transition: border-color 0.2s ease, box-shadow 0.2s ease;
       width: 100%;
-      background-color: #f9f9f9; 
+      background-color: #f9f9f9;
 
       &:focus {
         border-color: var(--primary);
@@ -101,7 +101,7 @@
       }
 
       &.error {
-        border-color: #e57373; 
+        border-color: #e57373;
         box-shadow: 0px 0px 0px 3px rgba(229, 115, 115, 0.2);
       }
     }
@@ -114,10 +114,12 @@
 
     .select-wrapper {
       position: relative;
+
       select {
         appearance: none;
         padding-right: 40px;
       }
+
       .select-arrow {
         position: absolute;
         right: 15px;
@@ -134,46 +136,52 @@
     .star-rating {
       display: flex;
       justify-content: center;
-      margin-top: 5px; 
+      flex-direction: row-reverse;
+      gap: 6px;
+      margin-top: 5px;
+    }
 
-      .star-label {
-        cursor: pointer;
-        font-size: 40px; 
-        color: #d3d3d3; 
-        transition: color 0.2s ease;
+    .star {
+      cursor: pointer;
+      color: #d3d3d3;
+      font-size: 40px;
+      transition: color 0.3s ease, transform 0.15s ease;
+      user-select: none;
 
-        input[type="radio"] {
-          display: none; 
-        }
-
-        .star-icon {
-          display: inline-block;
-          &:hover {
-            color: #ffc107; 
-          }
-        }
-
-        & .star-icon.filled {
-          color: #ffc107;
-        }
+      &:hover {
+        transform: scale(1.15);
       }
     }
+
+    /* hover preview */
+    .star:hover,
+    .star:hover~.star {
+      color: var(--primary);
+    }
+
+    /* selected */
+    .star.selected,
+    .star.selected~.star {
+      color: var(--primary);
+    }
+
 
     .error-message {
       color: #e57373;
       font-size: 14px;
       margin-top: 5px;
       position: absolute;
-      bottom: -20px; 
+      bottom: -20px;
       left: 0;
     }
   }
 }
+
 .modal-actions {
   display: flex;
-  justify-content: flex-end; 
-  gap: 15px; 
-  margin-top: 30px; 
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 30px;
 
   .submit-feedback-button,
   .cancel-button {
@@ -183,7 +191,7 @@
     border-radius: 10px;
     cursor: pointer;
     transition: all 0.2s ease;
-    border: 2px solid transparent; 
+    border: 2px solid transparent;
 
     &:disabled {
       opacity: 0.6;
@@ -194,26 +202,27 @@
   }
 
   .submit-feedback-button {
-    background-color: var(--primary);
-    color: #1a1a1a;
-    border-color: var(--primary); 
+    background-color: #000000;
+    color: var(--primary);
+    border-color: none;
 
     &:not(:disabled):hover {
-      background-color: (var(--primary), 10%);
-      transform: translateY(-2px);
-      box-shadow: 0px 5px 15px rgba(228, 237, 100, 0.4);
+      background-color: #000000;
+      background-color: var(--primary);
+      color: #000000;
+      transform: translateY(-3px);
+      box-shadow: 0px 0px 15px var(--primary);
     }
   }
 
   .cancel-button {
-    background-color: #f0f0f0;
-    color: #555;
-    border-color: #ddd;
+    background-color: #ffffff;
+    color: #000000;
+    border-color: var(--primary);
 
     &:not(:disabled):hover {
-      background-color: #e0e0e0;
-      color: #333;
-      transform: translateY(-2px);
+      background-color: var(--primary);
+      transform: translateY(-3px);
       box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.05);
     }
   }
@@ -221,8 +230,13 @@
 
 /* Animations */
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideInFromTop {
@@ -230,6 +244,7 @@
     transform: translateY(-50px) scale(0.9);
     opacity: 0;
   }
+
   to {
     transform: translateY(0) scale(1);
     opacity: 1;
@@ -240,7 +255,7 @@
 @media (max-width: 600px) {
   .feedback-modal-content {
     padding: 25px;
-    margin: 15px; 
+    margin: 15px;
   }
 
   .modal-title {
@@ -253,22 +268,29 @@
 
   .feedback-form {
     gap: 15px;
+
     .form-group label {
       font-size: 14px;
     }
-    .form-group input, .form-group textarea, .form-group select {
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
       font-size: 14px;
       padding: 10px 12px;
     }
+
     .star-rating .star-label {
-      font-size: 32px; 
+      font-size: 32px;
     }
   }
 
   .modal-actions {
-    flex-direction: column; 
+    flex-direction: column;
     gap: 10px;
-    .submit-feedback-button, .cancel-button {
+
+    .submit-feedback-button,
+    .cancel-button {
       width: 100%;
       padding: 10px 15px;
       font-size: 15px;
@@ -277,18 +299,21 @@
 }
 
 @media (max-width: 400px) {
-    .feedback-modal-content {
-        padding: 20px;
+  .feedback-modal-content {
+    padding: 20px;
+  }
+
+  .modal-title {
+    font-size: 24px;
+  }
+
+  .modal-subtitle {
+    font-size: 13px;
+  }
+
+  .feedback-form {
+    .star-rating .star-label {
+      font-size: 28px;
     }
-    .modal-title {
-        font-size: 24px;
-    }
-    .modal-subtitle {
-        font-size: 13px;
-    }
-    .feedback-form {
-        .star-rating .star-label {
-            font-size: 28px;
-        }
-    }
+  }
 }
