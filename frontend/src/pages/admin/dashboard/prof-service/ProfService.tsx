@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import "./ProfService.scss";
 import {
+  deleteProfService,
   getAllProfServices,
   getUserById,
   updateProfService,
 } from "../../../../services/adminServices";
 import type { TProfessionalService } from "../../../../utils/types/profServiceTypes";
-import { Search, Edit2, Eye, X, MapPin, Phone, Star, Briefcase, Mail, User } from "lucide-react";
+import { Search, Edit2, Eye, X, MapPin, Phone, Star, Briefcase, Mail, User, Trash2 } from "lucide-react";
 import { GrAchievement } from "react-icons/gr";
 
 const ProfService = () => {
@@ -20,6 +21,7 @@ const ProfService = () => {
   const [filterApproval, setFilterApproval] = useState("all");
   const [filterCategory, setFilterCategory] = useState("all");
   const [providerInfo, setProviderInfo] = useState<any | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<TProfessionalService | null>(null);
 
   const fetchServices = async () => {
     setLoading(true);
@@ -79,6 +81,21 @@ const ProfService = () => {
       await fetchServices();
     } catch (error) {
       console.error("Error updating service:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!deleteTarget) return;
+
+    try {
+      setLoading(true);
+      await deleteProfService(deleteTarget._id as string);
+      setDeleteTarget(null);
+      await fetchServices();
+    } catch (error) {
+      console.error("Delete failed:", error);
     } finally {
       setLoading(false);
     }
@@ -256,7 +273,7 @@ const ProfService = () => {
                         window.open(service.certificate, "_blank");
                       }}
                     >
-                      <GrAchievement/> <span className="ml-1">view</span>
+                      <GrAchievement /> <span className="ml-1">view</span>
                     </button>
                   ) : (
                     <span className="text-muted">No Certificate</span>
@@ -289,6 +306,13 @@ const ProfService = () => {
                     title="Edit Service"
                   >
                     <Edit2 size={18} />
+                  </button>
+                  <button
+                    className="btn-icon bg-red-500 text-white"
+                    onClick={() => setDeleteTarget(service)}
+                    title="Delete Service"
+                  >
+                    <Trash2 size={18} />
                   </button>
                 </div>
               </div>
@@ -581,6 +605,54 @@ const ProfService = () => {
               </button>
               <button className="btn btn-primary" onClick={handleSave} disabled={loading}>
                 {loading ? "Saving..." : "Save Changes"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* delete confimation modal */}
+      {/* Delete Confirmation Modal */}
+      {deleteTarget && (
+        <div className="modal-overlay" onClick={() => setDeleteTarget(null)}>
+          <div
+            className="modal-container delete-modal"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="modal-header">
+              <h3>Confirm Delete</h3>
+              <button
+                className="btn-close"
+                onClick={() => setDeleteTarget(null)}
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="modal-body text-center">
+              <p>
+                Are you sure you want to delete this service?
+              </p>
+              <strong>{deleteTarget.category}</strong>
+              <p className="text-muted mt-2">
+                This action cannot be undone.
+              </p>
+            </div>
+
+            <div className="modal-footer">
+              <button
+                className="btn btn-secondary"
+                onClick={() => setDeleteTarget(null)}
+              >
+                Cancel
+              </button>
+
+              <button
+                className="btn btn-danger"
+                onClick={handleDelete}
+                disabled={loading}
+              >
+                {loading ? "Deleting..." : "Yes, Delete"}
               </button>
             </div>
           </div>

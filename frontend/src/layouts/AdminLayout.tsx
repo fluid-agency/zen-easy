@@ -2,10 +2,14 @@ import { Outlet, Navigate } from "react-router-dom";
 import AdminSidebar from "../components/admin/AdminSidebar";
 
 const AdminLayout = () => {
-  const isAdmin = JSON.parse(localStorage.getItem("isAdmin")as string);
-
-  if (!isAdmin) {
-    return <Navigate to="/admin/login" replace />;
+  //get token from cookies
+  const token = document.cookie
+    .split("; ")
+    .find((row) => row.startsWith("admin_token="))
+    ?.split("=")[1];
+  
+  if(!token){
+    return <Navigate to="/admin/login" replace />
   }
 
   return (

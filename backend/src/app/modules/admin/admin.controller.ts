@@ -4,26 +4,35 @@ import sendResponse from "../../utils/sendResponse";
 import httpStatus from "http-status";
 import { adminServices } from "./admin.service";
 import { errorResponse } from "../../utils/errorResponse";
+import { createToken } from "../../utils/createToken";
 
 
 //------------------Login admin ---------------------//
 const loginAdmin = catchAsync(async (req: Request, res: Response) => {
     const result = await adminServices.adminLogin(req.body);
-     
-    if(!result){
-        sendResponse(res,{
-            statusCode:httpStatus.UNAUTHORIZED,
-            success:false,
-            message:"Invalid Credentials",
-            data:result
-        })
+    if (result) {
+        const token = createToken(
+            { role: "admin" },
+            process.env.JWT_SECRET as string
+        );
+        console.log(token)
+        if (token) {
+            sendResponse(res, {
+                success: true,
+                statusCode: 200,
+                message: "Token generated successfully",
+                data: token,
+            });
+        } else {
+            sendResponse(res, {
+                success: false,
+                statusCode: 500,
+                message: "Token generation failed",
+                data: null,
+            });
+        }
     }
-    sendResponse(res, {
-        statusCode: httpStatus.OK,
-        success: true,
-        message: "Admin logged in successfully",
-        data: result,
-    });
+
 });
 
 
@@ -35,6 +44,18 @@ const getAllProfServices = catchAsync(async (req: Request, res: Response) => {
         statusCode: httpStatus.OK,
         success: true,
         message: "Services retrieved successfully",
+        data: result,
+    });
+});
+
+const deleteProfService = catchAsync(async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const result = await adminServices.deleteProfService(id);
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Service deleted successfully",
         data: result,
     });
 });
@@ -53,19 +74,19 @@ const getAllUsers = catchAsync(async (req: Request, res: Response) => {
 });
 
 const editUserDetails = catchAsync(async (req, res) => {
-  const _id = req?.params?.id;
-  const payload = req?.body;
+    const _id = req?.params?.id;
+    const payload = req?.body;
 
-  const result = await adminServices.updateUserDetails(_id, payload);
-  if (result) {
-    sendResponse(res, {
-      success: true,
-      statusCode: 200,
-      message: "User details updated successfully",
-      data: result,
-    });
-  }
-  errorResponse("User details update failed", 400);
+    const result = await adminServices.updateUserDetails(_id, payload);
+    if (result) {
+        sendResponse(res, {
+            success: true,
+            statusCode: 200,
+            message: "User details updated successfully",
+            data: result,
+        });
+    }
+    errorResponse("User details update failed", 400);
 });
 
 
@@ -114,4 +135,5 @@ export const adminControllers = {
     deleteUser,
     getAllRents,
     deleteRent,
+    deleteProfService,
 };

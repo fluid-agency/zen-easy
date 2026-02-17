@@ -26,12 +26,11 @@ const AdminLogin = () => {
 
             const res = await signInAdmin(data.email, data.password);
 
-            // save token
             if (res.success && res.data) {
-                localStorage.setItem("isAdmin", "true");
+                //set token to cookie
+                document.cookie = `admin_token=${res.data}; path=/; expires=${new Date(Date.now() + 1000 * 60 * 60 * 24).toUTCString()};`;
+                navigate("/admin/overview");
             }
-            // redirect
-            navigate("/admin/overview");
         } catch (err: unknown) {
             if (err instanceof Error) {
                 setLoginError(err.message);

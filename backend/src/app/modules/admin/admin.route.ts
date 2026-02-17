@@ -1,6 +1,6 @@
 import express from "express";
 import { adminControllers } from "./admin.controller";
-import { verifyToken } from "../../middlewares/verifyToken";
+import { verifyAdminToken, verifyToken } from "../../middlewares/verifyToken";
 import { profHandlerControllers } from "../professional-service/profservice.controller";
 
 const router = express.Router();
@@ -9,11 +9,12 @@ const router = express.Router();
 router.post("/login", adminControllers.loginAdmin);
 
 //-------Prof Service CRUD--------------//
-router.get('/all-prof-services', adminControllers.getAllProfServices);
-router.patch(`/service-profile/:id`, profHandlerControllers.updateProfessionalProfile);
+router.get('/all-prof-services', verifyAdminToken, adminControllers.getAllProfServices);
+router.patch(`/service-profile/:id`, verifyAdminToken, profHandlerControllers.updateProfessionalProfile);
+router.delete(`/service-profile/:id`, verifyAdminToken, adminControllers.deleteProfService);
 
 /* -------- USERS -------- */
-router.get("/users", adminControllers.getAllUsers);
+router.get("/users", verifyAdminToken, adminControllers.getAllUsers);
 router.patch(`/users/update-details/:id`,adminControllers.editUserDetails);
 router.delete(`/users/:id`, adminControllers.deleteUser);
 

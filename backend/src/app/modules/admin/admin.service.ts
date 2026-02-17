@@ -17,6 +17,10 @@ const getAllProfServices = async() =>{
     return await ProfessionalService.find();
 }
 
+const deleteProfService = async (id: string) => {
+    return await ProfessionalService.findByIdAndDelete(id);
+}
+
 /* ---------------- USER CRUD ---------------- */
 
 const getAllUsers = async () => {
@@ -50,4 +54,5 @@ export const adminServices = {
     deleteUser,
     getAllRents,
     deleteRent,
+    deleteProfService
 };

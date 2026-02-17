@@ -501,7 +501,7 @@
         padding: 1.5rem;
         border-radius: 50%;
         backdrop-filter: blur(10px);
-        
+
         svg {
           color: white;
         }
@@ -742,6 +742,17 @@
       }
     }
   }
+
+
+  .delete-modal {
+    max-width: 500px;
+  }
+
+  .btn-danger {
+    background: #ef4444;
+    color: white;
+  }
+
 
   // Responsive Design
   @media (max-width: 1024px) {
