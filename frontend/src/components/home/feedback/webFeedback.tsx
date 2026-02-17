@@ -172,14 +172,14 @@ export default function WebFeedback() {
         {/* Navigation Buttons */}
         <button
           onClick={handlePrev}
-          className="absolute left-4 md:left-12 z-50 p-3 rounded-full bg-white/80 backdrop-blur-md border border-neutral-200 hover:bg-[#ffca16]/10 hover:border-[#ffca16]/30 transition-all group shadow-sm"
+          className="absolute left-4 md:left-12 z-5 p-3 rounded-full bg-white/80 backdrop-blur-md border border-neutral-200 hover:bg-[#ffca16]/10 hover:border-[#ffca16]/30 transition-all group shadow-sm"
         >
           <ChevronLeft className="w-5 h-5 text-neutral-600 group-hover:text-[#ffca16]" />
         </button>
 
         <button
           onClick={handleNext}
-          className="absolute right-4 md:right-12 z-50 p-3 rounded-full bg-white/80 backdrop-blur-md border border-neutral-200 hover:bg-[#ffca16]/10 hover:border-[#ffca16]/30 transition-all group shadow-sm"
+          className="absolute right-4 md:right-12 z-5 p-3 rounded-full bg-white/80 backdrop-blur-md border border-neutral-200 hover:bg-[#ffca16]/10 hover:border-[#ffca16]/30 transition-all group shadow-sm"
         >
           <ChevronRight className="w-5 h-5 text-neutral-600 group-hover:text-[#ffca16]" />
         </button>
