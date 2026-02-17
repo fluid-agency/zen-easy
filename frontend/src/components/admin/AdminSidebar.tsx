@@ -39,9 +39,10 @@ const AdminSidebar = () => {
     setIsMobileOpen(false);
   };
 
-  const handleLogOut = () =>{
-    localStorage.removeItem('isAdmin');
-    navigate('/auth/login');
+  const handleLogOut = () => {
+    //remove token from cookie
+    document.cookie = "admin_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+    navigate("/admin/login");
   }
 
   return (
@@ -84,9 +85,8 @@ const AdminSidebar = () => {
             className="hidden lg:block"
           >
             <ChevronLeft
-              className={`transition-transform ${
-                isCollapsed ? "rotate-180" : ""
-              }`}
+              className={`transition-transform ${isCollapsed ? "rotate-180" : ""
+                }`}
             />
           </button>
         </div>
@@ -102,10 +102,9 @@ const AdminSidebar = () => {
                 key={item.id}
                 onClick={() => handleNavigation(item.path)}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg
-                  ${
-                    isActive
-                      ? "bg-blue-50 text-blue-600"
-                      : "text-gray-700 hover:bg-gray-50"
+                  ${isActive
+                    ? "bg-blue-50 text-blue-600"
+                    : "text-gray-700 hover:bg-gray-50"
                   }`}
               >
                 <Icon className="w-5 h-5" />
@@ -116,56 +115,56 @@ const AdminSidebar = () => {
         </nav>
 
         {/* Footer */}
-      <div className="absolute bottom-0 w-full p-3 bg-gradient-to-t from-white via-white to-transparent border-t border-gray-200/80 backdrop-blur-sm">
-  <div className="space-y-2">
-    {/* Settings Button */}
-    <button 
-      className="w-full group flex items-center gap-3 px-4 py-3 rounded-xl 
+        <div className="absolute bottom-0 w-full p-3 bg-gradient-to-t from-white via-white to-transparent border-t border-gray-200/80 backdrop-blur-sm">
+          <div className="space-y-2">
+            {/* Settings Button */}
+            <button
+              className="w-full group flex items-center gap-3 px-4 py-3 rounded-xl 
                  bg-white border border-gray-200/60
                  hover:border-gray-300 hover:bg-gray-50/80
                  transition-all duration-300 ease-in-out
                  hover:shadow-md hover:shadow-gray-200/50
                  active:scale-[0.98]"
-    >
-      <div className="relative">
-        <Settings className="w-5 h-5 text-gray-600 group-hover:text-gray-800 
+            >
+              <div className="relative">
+                <Settings className="w-5 h-5 text-gray-600 group-hover:text-gray-800 
                            transition-all duration-300 group-hover:rotate-90" />
-        <div className="absolute inset-0 bg-gray-400/20 rounded-full blur-md 
+                <div className="absolute inset-0 bg-gray-400/20 rounded-full blur-md 
                         opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-      </div>
-      {!isCollapsed && (
-        <span className="font-medium text-gray-700 group-hover:text-gray-900 
+              </div>
+              {!isCollapsed && (
+                <span className="font-medium text-gray-700 group-hover:text-gray-900 
                        transition-colors duration-300">
-          Settings
-        </span>
-      )}
-    </button>
+                  Settings
+                </span>
+              )}
+            </button>
 
-    {/* Logout Button */}
-    <button 
-      onClick={() => handleLogOut()} 
-      className="w-full group flex items-center gap-3 px-4 py-3 rounded-xl 
+            {/* Logout Button */}
+            <button
+              onClick={() => handleLogOut()}
+              className="w-full group flex items-center gap-3 px-4 py-3 rounded-xl 
                  bg-red-50/50 border border-red-200/60
                  hover:bg-red-100/80 hover:border-red-300
                  transition-all duration-300 ease-in-out
                  hover:shadow-md hover:shadow-red-200/50
                  active:scale-[0.98]"
-    >
-      <div className="relative">
-        <LogOut className="w-5 h-5 text-red-500 group-hover:text-red-600 
+            >
+              <div className="relative">
+                <LogOut className="w-5 h-5 text-red-500 group-hover:text-red-600 
                          transition-all duration-300 group-hover:translate-x-0.5" />
-        <div className="absolute inset-0 bg-red-400/20 rounded-full blur-md 
+                <div className="absolute inset-0 bg-red-400/20 rounded-full blur-md 
                         opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-      </div>
-      {!isCollapsed && (
-        <span className="font-medium text-red-600 group-hover:text-red-700 
+              </div>
+              {!isCollapsed && (
+                <span className="font-medium text-red-600 group-hover:text-red-700 
                        transition-colors duration-300">
-          Logout
-        </span>
-      )}
-    </button>
-  </div>
-</div>
+                  Logout
+                </span>
+              )}
+            </button>
+          </div>
+        </div>
       </aside>
     </>
   );
