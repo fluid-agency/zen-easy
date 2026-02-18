@@ -15,10 +15,10 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(
   cors({
-    origin: ["https://zen-easy.vercel.app", "http://localhost:5173", "http://localhost:5174", "http://localhost:5175"],
+    origin: ["https://zen-easy.vercel.app", "https://zen-easy-bd.vercel.app/", "http://localhost:5173", "http://localhost:5174", "http://localhost:5175"],
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true,
-    allowedHeaders:['Content-Type' , 'Authorization', 'X-Requested-With'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   })
 );
 

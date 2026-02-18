@@ -28,4 +28,5 @@ export type TProfessionalService = {
   status?: "active" | "inactive";
   certificate: string;
   isApproved: "pending" | "approved" | "reject";
+  createdAt?: Date;
 };

@@ -13,7 +13,6 @@ import {
   DollarSign,
   Home,
   Info,
-  Image as ImageIcon,
 } from "lucide-react";
 import {
   getAllRents,
@@ -127,7 +126,7 @@ const Rents = () => {
     return status === "Active" ? "badge-active" : "badge-booked";
   };
 
-  const getCategoryIcon = (category: string) => {
+  const getCategoryIcon = () => {
     return <Home size={16} />;
   };
 
@@ -338,7 +337,7 @@ const Rents = () => {
               {/* Property Details */}
               <div className="property-section">
                 <h4 className="section-title">
-                  {getCategoryIcon(viewRent.category)} {viewRent.category}
+                  {getCategoryIcon()} {viewRent.category}
                 </h4>
                 <div className="property-badges">
                   <span className={`badge ${getStatusBadgeClass(viewRent.status)}`}>
